@@ -21,3 +21,4 @@ tests
 .editorconfig
 .eslintrc.yml
 tsconfig.json
+*.gif
