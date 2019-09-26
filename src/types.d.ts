@@ -10,6 +10,7 @@ export interface GulpMemoryFsArgs {
   port: number;
   dir: string;
   https?: Https;
+  reload?: boolean;
 }
 
 export interface ServerArgs extends GulpMemoryFsArgs {
@@ -27,3 +28,5 @@ export interface OutPath {
   file: string;
   dir: string;
 }
+
+export type Socket = { [key: string]: any };

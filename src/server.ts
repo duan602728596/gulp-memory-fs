@@ -1,14 +1,17 @@
 import * as path from 'path';
+import { ParsedPath } from 'path';
 import * as http from 'http';
+import { Server as Http1Server } from 'http';
 import * as http2 from 'http2';
+import { SecureServerOptions, Http2SecureServer } from 'http2';
 import * as fs from 'fs';
-import { SecureServerOptions } from 'http2';
 import * as Koa from 'koa';
 import { Context } from 'koa';
 import * as Router from '@koa/router';
 import * as mime from 'mime-types';
 import * as MemoryFs from 'memory-fs';
-import { ServerArgs, Https } from './types';
+import * as socketIo from 'socket.io';
+import { ServerArgs, Https, Socket } from './types';
 
 class Server {
   private port: number;
@@ -17,13 +20,17 @@ class Server {
   private app: Koa;
   private router: Router;
   private https?: Https;
+  private reload: boolean;
+  private server: Http1Server | Http2SecureServer;
+  private socket: Socket;
 
   constructor(args: ServerArgs) {
     const {
-      port, // 服务监听的端口号
-      dir,  // 服务的文件目录
-      fs,   // 内存文件系统
-      https // http2
+      port,  // 服务监听的端口号
+      dir,   // 服务的文件目录
+      fs,    // 内存文件系统
+      https, // http2
+      reload // 热更新
     }: ServerArgs = args;
 
     this.port = port;
@@ -32,6 +39,7 @@ class Server {
     this.app = new Koa();
     this.router = new Router();
     this.https = https;
+    this.reload = !!reload;
   }
 
   // 创建中间件
@@ -44,12 +52,40 @@ class Server {
   createRouters(): void {
     const _this: this = this;
 
-    this.router.get('/*', function(ctx: Context, next: Function): void {
+    this.router.get('/*', async function(ctx: Context, next: Function): Promise<void> {
       try {
         const ctxPath: string = ctx.path === '/' ? '/index.html' : ctx.path; // 路径
         const filePath: string = path.join(_this.dir, ctxPath)               // 文件
           .replace(/\\/g, '/');
         const mimeType: string | boolean = mime.lookup(ctxPath);
+
+        if (/^\/gulp-memory-fs/i.test(ctxPath)) {
+          const result: ParsedPath = path.parse(ctxPath);
+
+          if (result.name === 'socket.io') {
+            const bf: Buffer = await fs.promises.readFile(path.join(__dirname, '../node_modules/socket.io-client/dist/socket.io.js'));
+
+            ctx.type = 'application/javascript';
+            ctx.status = 200;
+            ctx.body = bf;
+
+            return;
+          }
+
+          if (result.name === 'client') {
+            const bf: Buffer = await fs.promises.readFile(path.join(__dirname, 'client.js'));
+            const data: string = `(function(){
+              ${ bf }
+                client(${ !!_this.https }, ${ _this.port });
+              })();`;
+
+            ctx.type = 'application/javascript';
+            ctx.status = 200;
+            ctx.body = data;
+
+            return;
+          }
+        }
 
         // 判断文件是否存在
         if (!_this.fs.existsSync(filePath)) {
@@ -81,13 +117,44 @@ class Server {
         cert: certFile
       };
 
-      http2.createSecureServer(httpsConfig, this.app.callback())
+      this.server = http2.createSecureServer(httpsConfig, this.app.callback())
         .listen(this.port);
-
     } else {
-      http.createServer(this.app.callback())
+      this.server = http.createServer(this.app.callback())
         .listen(this.port);
     }
+  }
+
+  // 注入脚本
+  injectionScript(html: string): string {
+    const scripts: string = `<!-- gulp-memory-fs injection script start -->
+      <script src="/gulp-memory-fs/socket.io.js"></script>
+      <script src="/gulp-memory-fs/client.js"></script>
+      <!-- gulp-memory-fs injection script end -->`;
+
+    return `${ html }${ scripts }`;
+  }
+
+  /**
+   * reload
+   * @param { string } type: 文件类型
+   */
+  reloadFunc(type: string): void {
+    if (!this.socket) return;
+
+    this.socket.emit('RELOAD', {
+      type
+    });
+  }
+
+  // socket
+  createSocket(): void {
+    const _this: this = this;
+    const io: any = socketIo(this.server);
+
+    io.on('connection', function(socket: Socket): void {
+      _this.socket = socket;
+    });
   }
 
   // 初始化
@@ -95,6 +162,11 @@ class Server {
     this.createMiddleware();
     this.createRouters();
     await this.createServer();
+
+    // 热更新
+    if (this.reload) {
+      this.createSocket();
+    }
   }
 }
 

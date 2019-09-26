@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { ParsedPath } from 'path';
 import { Stats } from 'fs';
 import * as MemoryFs from 'memory-fs';
 import * as through2 from 'through2';
@@ -13,6 +14,7 @@ class GulpMemoryFs {
   private port: number;
   private dir: string;
   private https?: Https;
+  private reload: boolean;
   private server: Server;
   private cTime: Map<string, number>;
 
@@ -20,7 +22,8 @@ class GulpMemoryFs {
     const {
       port = 7777,
       dir,
-      https
+      https,
+      reload
     }: GulpMemoryFsArgs = args;
 
     this.PLUGIN_NAME = 'gulp-memory-fs';                 // 插件名
@@ -28,11 +31,13 @@ class GulpMemoryFs {
     this.port = port;                                    // 服务监听的端口号
     this.dir = path.isAbsolute(dir) ? dir : `/${ dir }`; // 服务的文件目录
     this.https = https;
+    this.reload = !!reload;
     this.server = new Server({                      // 服务
       port,
       dir: this.dir,
       fs: this.fs,
-      https
+      https,
+      reload
     });
     this.cTime = new Map<string, number>();              // 记录缓存时间
   }
@@ -53,13 +58,27 @@ class GulpMemoryFs {
         return callback();
       }
 
-      const contents: Buffer = file.contents; // 文件
+      // 判断是否为html文件
+      const fileResult: ParsedPath = path.parse(file.relative);
+      const isHtml: boolean = fileResult.ext === '.html';
+      let contents: string | Buffer = isHtml
+        ? file.contents.toString('utf8')
+        : file.contents; // 文件
+
+      // 注入灵魂
+      if (isHtml && typeof contents === 'string') {
+        contents = _this.server.injectionScript(contents);
+      }
+
       const formatOutput: OutPath = formatOutPath(outputDir, file.relative);
 
       // 写入文件
       _this.fs.mkdirpSync(formatOutput.dir);
       _this.fs.writeFileSync(formatOutput.file, contents);
       _this.cTime.set(formatOutput.file, new Date().getTime());
+
+      // reload
+      _this.reload && _this.server.reloadFunc(fileResult.ext);
 
       return callback();
     });

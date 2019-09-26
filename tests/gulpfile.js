@@ -3,7 +3,8 @@ const path = require('path');
 const GulpMemoryFs = require('../cjs');
 
 const gulpMemoryFs = new GulpMemoryFs({
-  dir: 'dist'
+  dir: 'dist',
+  reload: true
 });
 
 function js() {
