@@ -3,6 +3,23 @@
   "version": "0.0.1",
   "description": "Memory file system can also be used in gulp environment. - gulp环境下也可以使用内存文件系统。",
   "main": "cjs.js",
+  "author": {
+    "name": "段昊辰",
+    "email": "duanhaochen@126.com",
+    "url": "https://github.com/duan602728596"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:duan602728596/gulp-memory-fs.git"
+  },
+  "homepage": "https://github.com/duan602728596/gulp-memory-fs",
+  "license": "MIT",
+  "keywords": [
+    "gulp",
+    "gulpplugin",
+    "gulp-memory-fs",
+    "memory-fs"
+  ],
   "scripts": {
     "start": "rimraf lib && tsc --watch",
     "build": "rimraf lib && tsc",
