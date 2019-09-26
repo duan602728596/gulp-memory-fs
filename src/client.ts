@@ -11,7 +11,7 @@ function handleSocketReload(data: any): void {
     /* reload */
     window.location.reload();
     timer = undefined;
-  }, 500);
+  }, 250);
 }
 
 /* client scripts */
