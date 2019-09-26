@@ -74,7 +74,7 @@ class Server {
 
           if (result.name === 'client') {
             const data: string = `(function(){
-              ${ _this.injectionScript }
+              ${ _this.clientScript }
                 client(${ !!_this.https }, ${ _this.port });
               })();`;
 
