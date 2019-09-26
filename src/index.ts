@@ -89,7 +89,7 @@ class GulpMemoryFs {
         : file.contents; // 文件
 
       // 注入灵魂
-      if (isHtml && typeof contents === 'string') {
+      if (_this.reload && isHtml && typeof contents === 'string') {
         contents = _this.server.injectionScripts(contents);
       }
 
