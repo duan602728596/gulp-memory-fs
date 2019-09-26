@@ -23,6 +23,8 @@ class Server {
   private reload: boolean;
   private server: Http1Server | Http2SecureServer;
   private socket: Socket;
+  private socketIoScript: Buffer;
+  private clientScript: string;
 
   constructor(args: ServerArgs) {
     const {
@@ -52,7 +54,7 @@ class Server {
   createRouters(): void {
     const _this: this = this;
 
-    this.router.get('/*', async function(ctx: Context, next: Function): Promise<void> {
+    this.router.get('/*', function(ctx: Context, next: Function): void {
       try {
         const ctxPath: string = ctx.path === '/' ? '/index.html' : ctx.path; // 路径
         const filePath: string = path.join(_this.dir, ctxPath)               // 文件
@@ -63,19 +65,16 @@ class Server {
           const result: ParsedPath = path.parse(ctxPath);
 
           if (result.name === 'socket.io') {
-            const bf: Buffer = await fs.promises.readFile(path.join(__dirname, '../node_modules/socket.io-client/dist/socket.io.js'));
-
             ctx.type = 'application/javascript';
             ctx.status = 200;
-            ctx.body = bf;
+            ctx.body = _this.socketIoScript;
 
             return;
           }
 
           if (result.name === 'client') {
-            const bf: Buffer = await fs.promises.readFile(path.join(__dirname, 'client.js'));
             const data: string = `(function(){
-              ${ bf }
+              ${ _this.injectionScript }
                 client(${ !!_this.https }, ${ _this.port });
               })();`;
 
@@ -152,6 +151,12 @@ class Server {
     });
   }
 
+  // file
+  async getFile(): Promise<void> {
+    this.socketIoScript = await fs.promises.readFile(path.join(__dirname, '../node_modules/socket.io-client/dist/socket.io.js'));
+    this.clientScript = (await fs.promises.readFile(path.join(__dirname, 'client.js'))).toString();
+  }
+
   // 初始化
   async init(): Promise<void> {
     this.createMiddleware();
@@ -160,6 +165,7 @@ class Server {
 
     // 热更新
     if (this.reload) {
+      await this.getFile();
       this.createSocket();
     }
   }
