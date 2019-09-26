@@ -90,7 +90,7 @@ class GulpMemoryFs {
 
       // 注入灵魂
       if (isHtml && typeof contents === 'string') {
-        contents = _this.server.injectionScript(contents);
+        contents = _this.server.injectionScripts(contents);
       }
 
       const formatOutput: OutPath = _this.formatOutPath(outputDir, file.relative);

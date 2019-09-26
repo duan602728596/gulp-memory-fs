@@ -125,11 +125,11 @@ class Server {
   }
 
   // 注入脚本
-  injectionScript(html: string): string {
-    const scripts: string = `<!-- gulp-memory-fs injection script start -->
+  injectionScripts(html: string): string {
+    const scripts: string = `<!-- gulp-memory-fs injection scripts start -->
       <script src="/gulp-memory-fs/socket.io.js"></script>
       <script src="/gulp-memory-fs/client.js"></script>
-      <!-- gulp-memory-fs injection script end -->`;
+      <!-- gulp-memory-fs injection scripts end -->`;
 
     return `${ html }${ scripts }`;
   }
