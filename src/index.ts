@@ -28,7 +28,7 @@ class GulpMemoryFs {
     this.PLUGIN_NAME = 'gulp-memory-fs'; // 插件名
     this.fs = new MemoryFs();            // 内存文件系统
     this.port = port;                    // 服务监听的端口号
-    this.dir = this.getOutputDir(dir);   // 服务的文件目录
+    this.dir = this.getDir(dir);   // 服务的文件目录
     this.https = https;
     this.reload = !!reload;
     this.server = new Server({      // 服务
@@ -42,7 +42,7 @@ class GulpMemoryFs {
   }
 
   // 转为绝对路径
-  getOutputDir(output: string): string {
+  getDir(output: string): string {
     return path.isAbsolute(output) ? output : `/${ output }`;
   }
 
@@ -71,7 +71,7 @@ class GulpMemoryFs {
    */
   dest(output: string): Function {
     const _this: this = this;
-    const outputDir: string = this.getOutputDir(output);
+    const outputDir: string = this.getDir(output);
 
     return through2.obj(function(file: File, enc: string, callback: Function): any {
       // 错误判断
@@ -113,7 +113,7 @@ class GulpMemoryFs {
    */
   changed(output: string): Function {
     const _this: this = this;
-    const outputDir: string = this.getOutputDir(output);
+    const outputDir: string = this.getDir(output);
 
     return through2.obj(function(file: File, enc: string, callback: Function): any {
       // 当前文件的修改时间
