@@ -41,6 +41,11 @@ class GulpMemoryFs {
     this.cTime = new Map<string, number>();              // 记录缓存时间
   }
 
+  // 转为绝对路径
+  getOutputDir(output: string): string {
+    return path.isAbsolute(output) ? output : `/${ output }`;
+  }
+
   /**
    * 格式化输出路径
    * @param { string } output: 输出目录
@@ -66,7 +71,7 @@ class GulpMemoryFs {
    */
   dest(output: string): Function {
     const _this: this = this;
-    const outputDir: string = path.isAbsolute(output) ? output : `/${ output }`; // 转为绝对路径
+    const outputDir: string = this.getOutputDir(output);
 
     return through2.obj(function(file: File, enc: string, callback: Function): any {
       // 错误判断
@@ -108,7 +113,7 @@ class GulpMemoryFs {
    */
   watch(output: string): Function {
     const _this: this = this;
-    const outputDir: string = path.isAbsolute(output) ? output : `/${ output }`; // 转为绝对路径
+    const outputDir: string = this.getOutputDir(output);
 
     return through2.obj(function(file: File, enc: string, callback: Function): any {
       // 当前文件的修改时间
