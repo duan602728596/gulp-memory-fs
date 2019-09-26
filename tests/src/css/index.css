@@ -1,4 +1,7 @@
 .title {
-  color: blueviolet;
-  text-decoration: underline;
+  color: #1890ff;
+}
+
+.list {
+  list-style-type: decimal;
 }
