@@ -54,5 +54,5 @@ Open the browser and type `http://127.0.0.1:7777/` to start development.
 Since it is a memory file system, you cannot use `gulp-changed` and use `GulpMemoryFs.prototype.changed` to compile only the modified file.
 
 | Parameter | Type | Description |
-| --- | --- | --- | --- |
+| --- | --- | --- |
 | output | string | Output file directory |

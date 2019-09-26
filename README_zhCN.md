@@ -52,5 +52,5 @@ exports.default = gulp.series(
 由于是内存文件系统，无法使用`gulp-changed`，使用`GulpMemoryFs.prototype.changed`来只编译修改后的文件。
 
 | 参数 | 类型 |  说明 |
-| --- | --- | --- | --- |
+| --- | --- | --- |
 | output | string | 输出文件的目录 |
