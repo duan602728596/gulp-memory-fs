@@ -5,7 +5,6 @@ import * as MemoryFs from 'memory-fs';
 import * as through2 from 'through2';
 import * as PluginError from 'plugin-error';
 import Server from './server';
-import { formatOutPath } from './utils';
 import { GulpMemoryFsArgs, File, OutPath, Https } from './types';
 
 class GulpMemoryFs {
@@ -43,6 +42,25 @@ class GulpMemoryFs {
   }
 
   /**
+   * 格式化输出路径
+   * @param { string } output: 输出目录
+   * @param { string } relative: 目录
+   */
+  formatOutPath(output: string, relative: string): OutPath {
+    // 文件路径
+    const outputFilePath: string = path.join(output, relative)
+      .replace(/\\/g, '/');
+
+    // 目录路径
+    const outputDirPath: string = path.dirname(outputFilePath);
+
+    return {
+      file: outputFilePath,
+      dir: outputDirPath
+    };
+  }
+
+  /**
    * 替换gulp.dest
    * @param { string } output: 输出目录
    */
@@ -70,7 +88,7 @@ class GulpMemoryFs {
         contents = _this.server.injectionScript(contents);
       }
 
-      const formatOutput: OutPath = formatOutPath(outputDir, file.relative);
+      const formatOutput: OutPath = _this.formatOutPath(outputDir, file.relative);
 
       // 写入文件
       _this.fs.mkdirpSync(formatOutput.dir);
@@ -98,7 +116,7 @@ class GulpMemoryFs {
       const mtime: number = stats.mtime.getTime();
 
       // 编译文件的修改时间
-      const formatOutput: OutPath = formatOutPath(outputDir, file.relative);
+      const formatOutput: OutPath = _this.formatOutPath(outputDir, file.relative);
       const time: number | undefined = _this.cTime.get(formatOutput.file);
 
       // 文件的最新修改时间大于缓存时间
