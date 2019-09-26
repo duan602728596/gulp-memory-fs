@@ -1,8 +1,11 @@
 {
   "name": "gulp-memory-fs",
+  "version": "0.0.1",
+  "description": "Memory file system can also be used in gulp environment. - gulp环境下也可以使用内存文件系统。",
   "main": "cjs.js",
   "scripts": {
     "start": "rimraf lib && tsc --watch",
+    "build": "rimraf lib && tsc",
     "example": "gulp --gulpfile tests/gulpfile.js",
     "test": "mocha ./tests/test.js --timeout 180000",
     "eslint": "eslint ./ --ext .js,.jsx,.ts,.tsx --fix"
