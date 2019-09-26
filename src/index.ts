@@ -25,20 +25,20 @@ class GulpMemoryFs {
       reload
     }: GulpMemoryFsArgs = args;
 
-    this.PLUGIN_NAME = 'gulp-memory-fs';                 // 插件名
-    this.fs = new MemoryFs();                            // 内存文件系统
-    this.port = port;                                    // 服务监听的端口号
-    this.dir = path.isAbsolute(dir) ? dir : `/${ dir }`; // 服务的文件目录
+    this.PLUGIN_NAME = 'gulp-memory-fs'; // 插件名
+    this.fs = new MemoryFs();            // 内存文件系统
+    this.port = port;                    // 服务监听的端口号
+    this.dir = this.getOutputDir(dir);   // 服务的文件目录
     this.https = https;
     this.reload = !!reload;
-    this.server = new Server({                      // 服务
+    this.server = new Server({      // 服务
       port,
       dir: this.dir,
       fs: this.fs,
       https,
       reload
     });
-    this.cTime = new Map<string, number>();              // 记录缓存时间
+    this.cTime = new Map<string, number>(); // 记录缓存时间
   }
 
   // 转为绝对路径
