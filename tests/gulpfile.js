@@ -18,9 +18,15 @@ function html() {
     .pipe(gulpMemoryFs.dest('dist'));
 }
 
+function css() {
+  return gulp.src(path.join(__dirname, 'src/**/*.css'))
+    .pipe(gulpMemoryFs.dest('dist'));
+}
+
 function watch() {
   gulp.watch('src/**/*.js', js);
   gulp.watch('src/**/*.html', html);
+  gulp.watch('src/**/*.css', css);
 }
 
 async function server() {
@@ -28,6 +34,6 @@ async function server() {
 }
 
 exports.default = gulp.series(
-  gulp.parallel(js, html),
+  gulp.parallel(js, html, css),
   gulp.parallel(watch, server)
 );

@@ -78,7 +78,7 @@ class GulpMemoryFs {
       _this.cTime.set(formatOutput.file, new Date().getTime());
 
       // reload
-      _this.reload && _this.server.reloadFunc(fileResult.ext);
+      _this.reload && _this.server.reloadFunc();
 
       return callback();
     });

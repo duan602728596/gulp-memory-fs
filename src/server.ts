@@ -135,16 +135,11 @@ class Server {
     return `${ html }${ scripts }`;
   }
 
-  /**
-   * reload
-   * @param { string } type: 文件类型
-   */
-  reloadFunc(type: string): void {
+  // reload
+  reloadFunc(): void {
     if (!this.socket) return;
 
-    this.socket.emit('RELOAD', {
-      type
-    });
+    this.socket.emit('RELOAD');
   }
 
   // socket

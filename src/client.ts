@@ -1,21 +1,15 @@
 declare const io: Function;
 
-interface ClientType {
-  type: '.html';
-}
-
 let timer: any = undefined;
 
-function handleSocketReload(data: ClientType): void {
+function handleSocketReload(data: any): void {
   if (typeof timer !== 'undefined') {
     clearTimeout(timer);
   }
 
   timer = setTimeout(function(): void {
-    if (data.type === '.html') {
-      window.location.reload();
-    }
-
+    /* reload */
+    window.location.reload();
     timer = undefined;
   }, 500);
 }
