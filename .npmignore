@@ -1,0 +1,23 @@
+# node
+node_modules
+npm-debug.log
+package-lock.json
+
+# yarn
+yarn.lock
+yarn-error.log
+
+# webstorm
+.idea
+
+# ignore
+.eslintignore
+.npmignore
+.gitignore
+
+# packages
+src
+tests
+.editorconfig
+.eslintrc.yml
+tsconfig.json

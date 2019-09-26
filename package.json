@@ -1,0 +1,46 @@
+{
+  "name": "gulp-memory-fs",
+  "main": "cjs.js",
+  "scripts": {
+    "start": "rimraf lib && tsc --watch",
+    "example": "gulp --gulpfile example/gulpfile.js",
+    "eslint": "eslint ./ --ext .js,.jsx,.ts,.tsx --fix"
+  },
+  "dependencies": {
+    "@koa/router": "^8.0.1",
+    "koa": "^2.8.1",
+    "memory-fs": "^0.4.1",
+    "mime-types": "^2.1.24",
+    "plugin-error": "^1.0.1",
+    "through2": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.0.50",
+    "@types/node": "^12.7.8",
+    "@typescript-eslint/eslint-plugin-tslint": "^2.3.1",
+    "@typescript-eslint/parser": "^2.3.1",
+    "babel-eslint": "^10.0.3",
+    "commitizen": "^4.0.3",
+    "cz-conventional-changelog": "^3.0.2",
+    "eslint": "^6.4.0",
+    "gulp": "^4.0.2",
+    "husky": "^3.0.5",
+    "lint-staged": "^9.3.0",
+    "rimraf": "^3.0.0",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": "eslint"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
