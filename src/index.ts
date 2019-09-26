@@ -111,7 +111,7 @@ class GulpMemoryFs {
    * 监视文件
    * @param { string } output: 输出目录
    */
-  watch(output: string): Function {
+  changed(output: string): Function {
     const _this: this = this;
     const outputDir: string = this.getOutputDir(output);
 

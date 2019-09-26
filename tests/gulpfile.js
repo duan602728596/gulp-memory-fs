@@ -9,7 +9,7 @@ const gulpMemoryFs = new GulpMemoryFs({
 
 function js() {
   return gulp.src(path.join(__dirname, 'src/**/*.js'))
-    .pipe(gulpMemoryFs.watch('dist'))
+    .pipe(gulpMemoryFs.changed('dist'))
     .pipe(gulpMemoryFs.dest('dist'));
 }
 
