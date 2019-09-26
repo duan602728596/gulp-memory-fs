@@ -20,7 +20,18 @@ function build() {
     .pipe(mfs.dest('dist'));
 }
 
-exports.default = build;
+async function server() {
+  await gulpMemoryFs.createServer();
+}
+
+function watch() {
+  gulp.watch('src/**/*.js', js);
+}
+
+exports.default = gulp.series(
+  build,
+  gulp.parallel(watch, server)
+);
 ```
 
 打开浏览器，输入`http://127.0.0.1:7777/`，开始开发。
