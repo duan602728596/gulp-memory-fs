@@ -8,14 +8,13 @@ import { GulpMemoryFsArgs, File, OutPath, Https } from './types';
 
 class GulpMemoryFs {
   private PLUGIN_NAME: string;
-  private cTime: Map<string, number>;
+  private mTime: Map<string, number>;
   private fs: MemoryFs;
 
   private port: number;
   private dir: string;
   private https?: Https;
   private reload: boolean;
-  private reloadTime?: number;
 
   private server: Server;
 
@@ -29,7 +28,7 @@ class GulpMemoryFs {
     }: GulpMemoryFsArgs = args;
 
     this.PLUGIN_NAME = 'gulp-memory-fs';    // 插件名
-    this.cTime = new Map<string, number>(); // 记录缓存时间
+    this.mTime = new Map<string, number>(); // 记录缓存时间
     this.fs = new MemoryFs();      // 内存文件系统
 
     this.port = port;              // 服务监听的端口号
@@ -94,7 +93,7 @@ class GulpMemoryFs {
       // 写入文件
       _this.fs.mkdirpSync(formatOutput.dir);
       _this.fs.writeFileSync(formatOutput.file, contents);
-      _this.cTime.set(formatOutput.file, new Date().getTime());
+      _this.mTime.set(formatOutput.file, new Date().getTime());
 
       // reload
       _this.reload && _this.server.reloadFunc();
@@ -118,7 +117,7 @@ class GulpMemoryFs {
 
       // 编译文件的修改时间
       const formatOutput: OutPath = _this.formatOutPath(outputDir, file.relative);
-      const time: number | undefined = _this.cTime.get(formatOutput.file);
+      const time: number | undefined = _this.mTime.get(formatOutput.file);
 
       // 文件的最新修改时间大于缓存时间
       if (!time || mtime > time) {
