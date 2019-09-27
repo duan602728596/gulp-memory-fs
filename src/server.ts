@@ -40,7 +40,7 @@ class Server {
       reloadTime // 更新时间
     }: ServerArgs = args;
 
-    this.port = port;
+    this.port = port || 7777;
     this.dir = dir;
     this.fs = fs;
     this.https = https;

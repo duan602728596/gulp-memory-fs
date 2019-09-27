@@ -10,17 +10,13 @@ class GulpMemoryFs {
   private PLUGIN_NAME: string;
   private mTime: Map<string, number>;
   private fs: MemoryFs;
-
-  private port: number;
-  private dir: string;
   private https?: Https;
   private reload: boolean;
-
   private server: Server;
 
   constructor(args: GulpMemoryFsArgs) {
     const {
-      port = 7777,
+      port,
       dir,
       https,
       reload,
@@ -31,8 +27,6 @@ class GulpMemoryFs {
     this.mTime = new Map<string, number>(); // 记录缓存时间
     this.fs = new MemoryFs();      // 内存文件系统
 
-    this.port = port;              // 服务监听的端口号
-    this.dir = this.getDir(dir);   // 服务的文件目录
     this.https = https;
     this.reload = !!reload;
 
@@ -40,7 +34,7 @@ class GulpMemoryFs {
     this.server = new Server({
       fs: this.fs,
       port,
-      dir: this.dir,
+      dir: this.getDir(dir),
       https,
       reload,
       reloadTime
