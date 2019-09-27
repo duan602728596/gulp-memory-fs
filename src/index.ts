@@ -81,18 +81,7 @@ class GulpMemoryFs {
         return callback();
       }
 
-      // 判断是否为html文件
-      const fileResult: ParsedPath = path.parse(file.relative);
-      const isHtml: boolean = fileResult.ext === '.html';
-      let contents: string | Buffer = isHtml
-        ? file.contents.toString('utf8')
-        : file.contents; // 文件
-
-      // 注入灵魂
-      if (_this.reload && isHtml && typeof contents === 'string') {
-        contents = _this.server.injectionScripts(contents);
-      }
-
+      const contents: Buffer = file.contents;
       const formatOutput: OutPath = _this.formatOutPath(outputDir, file.relative);
 
       // 写入文件

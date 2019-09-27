@@ -108,8 +108,15 @@ class Server {
           ctx.type = mimeType;
         }
 
+        let content: Buffer | string = _this.fs.readFileSync(filePath);
+
+        // 注入脚本
+        if (_this.reload && mimeType === 'text/html') {
+          content = _this.injectionScripts(content.toString());
+        }
+
         ctx.status = 200;
-        ctx.body = _this.fs.readFileSync(filePath);
+        ctx.body = content;
       } catch (err) {
         ctx.status = 500;
         ctx.body = err.toString();
@@ -140,10 +147,10 @@ class Server {
 
   // 注入脚本
   injectionScripts(html: string): string {
-    const scripts: string = `<!-- gulp-memory-fs injection scripts start -->
-      <script src="/gulp-memory-fs/socket.io.js"></script>
-      <script src="/gulp-memory-fs/client.js"></script>
-      <!-- gulp-memory-fs injection scripts end -->`;
+    const scripts: string = `\n\n<!-- gulp-memory-fs injection scripts start -->
+<script src="/gulp-memory-fs/socket.io.js"></script>
+<script src="/gulp-memory-fs/client.js"></script>
+<!-- gulp-memory-fs injection scripts end -->`;
 
     return `${ html }${ scripts }`;
   }
