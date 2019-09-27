@@ -18,6 +18,7 @@ yarn-error.log
 # packages
 src
 tests
+gulpfile.js
 .editorconfig
 .eslintrc.yml
 tsconfig.json

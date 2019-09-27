@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "start": "rimraf lib && tsc --watch",
-    "build": "rimraf lib && tsc",
+    "build": "gulp",
     "example": "gulp --gulpfile tests/gulpfile.js",
     "test": "mocha ./tests/test.js --timeout 180000",
     "eslint": "eslint ./ --ext .js,.jsx,.ts,.tsx --fix"
@@ -49,6 +49,8 @@
     "cz-conventional-changelog": "^3.0.2",
     "eslint": "^6.4.0",
     "gulp": "^4.0.2",
+    "gulp-terser": "^1.2.0",
+    "gulp-typescript": "^5.0.1",
     "husky": "^3.0.5",
     "lint-staged": "^9.3.0",
     "mocha": "^6.2.0",
