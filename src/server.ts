@@ -50,6 +50,36 @@ class Server {
       .use(this.router.allowedMethods());
   }
 
+  // gulp-memory-fs注入的文件解析
+  fileParsing(ctxPath: string, ctx: Context): boolean {
+    if (/^\/gulp-memory-fs/i.test(ctxPath)) {
+      const result: ParsedPath = path.parse(ctxPath);
+
+      if (result.name === 'socket.io') {
+        ctx.type = 'application/javascript';
+        ctx.status = 200;
+        ctx.body = this.socketIoScript;
+
+        return true;
+      }
+
+      if (result.name === 'client') {
+        const data: string = `(function(){
+              ${ this.clientScript }
+                client(${ !!this.https }, ${ this.port });
+              })();`;
+
+        ctx.type = 'application/javascript';
+        ctx.status = 200;
+        ctx.body = data;
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   // 创建路由
   createRouters(): void {
     const _this: this = this;
@@ -61,30 +91,10 @@ class Server {
           .replace(/\\/g, '/');
         const mimeType: string | boolean = mime.lookup(ctxPath);
 
-        if (/^\/gulp-memory-fs/i.test(ctxPath)) {
-          const result: ParsedPath = path.parse(ctxPath);
+        // gulp-memory-fs注入的文件解析
+        const fp: boolean = _this.fileParsing(ctxPath, ctx);
 
-          if (result.name === 'socket.io') {
-            ctx.type = 'application/javascript';
-            ctx.status = 200;
-            ctx.body = _this.socketIoScript;
-
-            return;
-          }
-
-          if (result.name === 'client') {
-            const data: string = `(function(){
-              ${ _this.clientScript }
-                client(${ !!_this.https }, ${ _this.port });
-              })();`;
-
-            ctx.type = 'application/javascript';
-            ctx.status = 200;
-            ctx.body = data;
-
-            return;
-          }
-        }
+        if (fp) return;
 
         // 判断文件是否存在
         if (!_this.fs.existsSync(filePath)) {
@@ -93,7 +103,11 @@ class Server {
           return;
         }
 
-        if (typeof mimeType === 'string') ctx.type = mimeType;
+        // mime-type
+        if (typeof mimeType === 'string') {
+          ctx.type = mimeType;
+        }
+
         ctx.status = 200;
         ctx.body = _this.fs.readFileSync(filePath);
       } catch (err) {
