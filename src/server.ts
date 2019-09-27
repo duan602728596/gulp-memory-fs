@@ -17,31 +17,38 @@ class Server {
   private port: number;
   private dir: string;
   private fs: MemoryFs;
-  private app: Koa;
-  private router: Router;
   private https?: Https;
   private reload: boolean;
+  private reloadTime: number;
+
+  private app: Koa;
+  private router: Router;
+
   private server: Http1Server | Http2SecureServer;
   private socket: Socket;
+
   private socketIoScript: Buffer;
   private clientScript: string;
 
   constructor(args: ServerArgs) {
     const {
-      port,  // 服务监听的端口号
-      dir,   // 服务的文件目录
-      fs,    // 内存文件系统
-      https, // http2
-      reload // 热更新
+      port,      // 服务监听的端口号
+      dir,       // 服务的文件目录
+      fs,        // 内存文件系统
+      https,     // http2
+      reload,    // 热更新
+      reloadTime // 更新时间
     }: ServerArgs = args;
 
     this.port = port;
     this.dir = dir;
     this.fs = fs;
-    this.app = new Koa();
-    this.router = new Router();
     this.https = https;
     this.reload = !!reload;
+    this.reloadTime = reloadTime || 250;
+
+    this.app = new Koa();
+    this.router = new Router();
   }
 
   // 创建中间件
@@ -64,10 +71,14 @@ class Server {
       }
 
       if (result.name === 'client') {
-        const data: string = `(function(){
-              ${ this.clientScript }
-                client(${ !!this.https }, ${ this.port });
-              })();`;
+        const data: string = `(function() {
+${ this.clientScript }
+  client({
+    https: ${ !!this.https },
+    port: ${ this.port },
+    reloadTime: ${ this.reloadTime }
+  });
+})();`;
 
         ctx.type = 'application/javascript';
         ctx.status = 200;

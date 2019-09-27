@@ -1,5 +1,4 @@
 import * as path from 'path';
-import { ParsedPath } from 'path';
 import { Stats } from 'fs';
 import * as MemoryFs from 'memory-fs';
 import * as through2 from 'through2';
@@ -9,36 +8,44 @@ import { GulpMemoryFsArgs, File, OutPath, Https } from './types';
 
 class GulpMemoryFs {
   private PLUGIN_NAME: string;
+  private cTime: Map<string, number>;
   private fs: MemoryFs;
+
   private port: number;
   private dir: string;
   private https?: Https;
   private reload: boolean;
+  private reloadTime?: number;
+
   private server: Server;
-  private cTime: Map<string, number>;
 
   constructor(args: GulpMemoryFsArgs) {
     const {
       port = 7777,
       dir,
       https,
-      reload
+      reload,
+      reloadTime
     }: GulpMemoryFsArgs = args;
 
-    this.PLUGIN_NAME = 'gulp-memory-fs'; // 插件名
-    this.fs = new MemoryFs();            // 内存文件系统
-    this.port = port;                    // 服务监听的端口号
+    this.PLUGIN_NAME = 'gulp-memory-fs';    // 插件名
+    this.cTime = new Map<string, number>(); // 记录缓存时间
+    this.fs = new MemoryFs();      // 内存文件系统
+
+    this.port = port;              // 服务监听的端口号
     this.dir = this.getDir(dir);   // 服务的文件目录
     this.https = https;
     this.reload = !!reload;
-    this.server = new Server({      // 服务
+
+    // 服务
+    this.server = new Server({
+      fs: this.fs,
       port,
       dir: this.dir,
-      fs: this.fs,
       https,
-      reload
+      reload,
+      reloadTime
     });
-    this.cTime = new Map<string, number>(); // 记录缓存时间
   }
 
   // 转为绝对路径

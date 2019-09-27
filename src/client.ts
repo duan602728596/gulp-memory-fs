@@ -1,22 +1,30 @@
 declare const io: Function;
 
+interface ClientArgs {
+  https: boolean;
+  port: number;
+  reloadTime: number;
+}
+
 let timer: any = undefined;
 
-function handleSocketReload(data: any): void {
-  if (typeof timer !== 'undefined') {
-    clearTimeout(timer);
-  }
+function createSocketReloadFunc(reloadTime: number): Function {
+  return function handleSocketReload(data: any): void {
+    if (typeof timer !== 'undefined') {
+      clearTimeout(timer);
+    }
 
-  timer = setTimeout(function(): void {
-    /* reload */
-    window.location.reload();
-    timer = undefined;
-  }, 250);
+    timer = setTimeout(function(): void {
+      /* reload */
+      window.location.reload();
+      timer = undefined;
+    }, reloadTime);
+  };
 }
 
 /* client scripts */
-function client(https: boolean, port: number): void {
+function client({ https, port, reloadTime }: ClientArgs): void {
   const socket: any = io(`${ https ? 'https' : 'http' }://127.0.0.1:${ port }/`);
 
-  socket.on('RELOAD', handleSocketReload);
+  socket.on('RELOAD', createSocketReloadFunc(reloadTime));
 }

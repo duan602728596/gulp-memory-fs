@@ -11,6 +11,7 @@ export interface GulpMemoryFsArgs {
   dir: string;
   https?: Https;
   reload?: boolean;
+  reloadTime?: number;
 }
 
 export interface ServerArgs extends GulpMemoryFsArgs {
