@@ -1,3 +1,4 @@
+import * as process from 'process';
 import * as path from 'path';
 import { ParsedPath } from 'path';
 import * as http from 'http';
@@ -186,7 +187,11 @@ class Server {
 
   // file
   async getFile(): Promise<void> {
-    this.socketIoScript = await fs.promises.readFile(path.join(__dirname, '../node_modules/socket.io-client/dist/socket.io.js'));
+    // 查找脚本位置
+    const socketIoPath: string = require.resolve('socket.io-client');
+    const socketIoPathFile: string = path.join(path.parse(socketIoPath).dir, '../dist/socket.io.js');
+
+    this.socketIoScript = await fs.promises.readFile(socketIoPathFile);
     this.clientScript = (await fs.promises.readFile(path.join(__dirname, 'client.js'))).toString();
   }
 
