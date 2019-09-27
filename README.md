@@ -46,8 +46,9 @@ Open the browser and type `http://127.0.0.1:7777/` to start development.
 | --- | --- | --- | --- |
 | port | number | Service port number | 7777 |
 | dir | string | Directory of resources | &nbsp; |
+| https | { key: string; cert: string; } | Configure the file address of the https certificate, service enables https. | &nbsp; |
 | reload | boolean | Whether the browser refreshes when the file is saved | false |
-| https | { key: string; cert: string; } | Configure https certificate, service enable https | &nbsp; |
+| reloadTime | number | Delayed refresh time of the browser after the file is modified | 250 |
 
 ### GulpMemoryFs.prototype.changed & GulpMemoryFs.prototype.dest
 
