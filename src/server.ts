@@ -71,14 +71,14 @@ class Server {
       }
 
       if (result.name === 'client') {
-        const data: string = `(function() {
-${ this.clientScript }
-  client({
-    https: ${ !!this.https },
-    port: ${ this.port },
-    reloadTime: ${ this.reloadTime }
-  });
-})();`;
+        const data: string = `(function() {\n
+          ${ this.clientScript }\n
+            client({
+              https: ${ !!this.https },
+              port: ${ this.port },
+              reloadTime: ${ this.reloadTime }
+            });\n
+          })();`;
 
         ctx.type = 'application/javascript';
         ctx.status = 200;
@@ -158,10 +158,11 @@ ${ this.clientScript }
 
   // 注入脚本
   injectionScripts(html: string): string {
-    const scripts: string = `\n\n<!-- gulp-memory-fs injection scripts start -->
-<script src="/gulp-memory-fs/socket.io.js"></script>
-<script src="/gulp-memory-fs/client.js"></script>
-<!-- gulp-memory-fs injection scripts end -->`;
+    const scripts: string = `\n
+      <!-- gulp-memory-fs injection scripts start -->
+      <script src="/gulp-memory-fs/socket.io.js"></script>
+      <script src="/gulp-memory-fs/client.js"></script>
+      <!-- gulp-memory-fs injection scripts end -->`;
 
     return `${ html }${ scripts }`;
   }
