@@ -1,3 +1,7 @@
+### v0.2.0
+
+* Fixed a serious problem where `socket.io-client` could not be found.
+
 ### v0.1.0
 
 * Script injection is done at the time of the file request, not after compilation.
