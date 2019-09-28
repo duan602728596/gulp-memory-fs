@@ -25,7 +25,7 @@ class GulpMemoryFs {
 
     this.PLUGIN_NAME = 'gulp-memory-fs';    // 插件名
     this.mTime = new Map<string, number>(); // 记录缓存时间
-    this.fs = new MemoryFs();      // 内存文件系统
+    this.fs = new MemoryFs();               // 内存文件系统
 
     this.https = https;
     this.reload = !!reload;
