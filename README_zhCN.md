@@ -25,7 +25,7 @@ async function server() {
 }
 
 function watch() {
-  gulp.watch('src/**/*.js', js);
+  gulp.watch('src/**/*.js', build);
 }
 
 exports.default = gulp.series(
