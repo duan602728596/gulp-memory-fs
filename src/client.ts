@@ -1,6 +1,4 @@
 interface ClientArgs {
-  https: boolean;
-  port: number;
   reloadTime: number;
 }
 
@@ -21,8 +19,8 @@ function createSocketReloadFunc(reloadTime: number): Function {
 }
 
 /* client scripts */
-function client({ https, port, reloadTime }: ClientArgs): void {
-  const socket: SocketIOClient.Socket = io(`${ https ? 'https' : 'http' }://127.0.0.1:${ port }/`);
+function client({ reloadTime }: ClientArgs): void {
+  const socket: SocketIOClient.Socket = io('/');
 
   socket.on('RELOAD', createSocketReloadFunc(reloadTime));
 }

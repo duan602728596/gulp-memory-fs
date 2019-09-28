@@ -74,8 +74,6 @@ class Server {
         const data: string = `(function() {\n
           ${ this.clientScript }\n
             client({
-              https: ${ !!this.https },
-              port: ${ this.port },
               reloadTime: ${ this.reloadTime }
             });\n
           })();`;
