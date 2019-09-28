@@ -55,3 +55,7 @@ exports.default = gulp.series(
 | 参数 | 类型 |  说明 |
 | --- | --- | --- |
 | output | string | 输出文件的目录 |
+
+### GulpMemoryFs.prototype.createServer
+
+启动服务。

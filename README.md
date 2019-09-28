@@ -57,3 +57,7 @@ Since it is a memory file system, you cannot use `gulp-changed` and use `GulpMem
 | Parameter | Type | Description |
 | --- | --- | --- |
 | output | string | Output file directory |
+
+### GulpMemoryFs.prototype.createServer
+
+Start the service.
