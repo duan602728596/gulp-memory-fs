@@ -1,4 +1,3 @@
-import * as process from 'process';
 import * as path from 'path';
 import { ParsedPath } from 'path';
 import * as http from 'http';
@@ -11,8 +10,8 @@ import { Context } from 'koa';
 import * as Router from '@koa/router';
 import * as mime from 'mime-types';
 import * as MemoryFs from 'memory-fs';
-import * as socketIo from 'socket.io';
-import { ServerArgs, Https, Socket } from './types';
+import * as socketIO from 'socket.io';
+import { ServerArgs, Https } from './types';
 
 class Server {
   private port: number;
@@ -26,9 +25,9 @@ class Server {
   private router: Router;
 
   private server: Http1Server | Http2SecureServer;
-  private socket: Socket;
+  private socket: socketIO.Socket;
 
-  private socketIoScript: Buffer;
+  private socketIOScript: Buffer;
   private clientScript: string;
 
   constructor(args: ServerArgs) {
@@ -66,7 +65,7 @@ class Server {
       if (result.name === 'socket.io') {
         ctx.type = 'application/javascript';
         ctx.status = 200;
-        ctx.body = this.socketIoScript;
+        ctx.body = this.socketIOScript;
 
         return true;
       }
@@ -178,9 +177,9 @@ class Server {
   // socket
   createSocket(): void {
     const _this: this = this;
-    const io: any = socketIo(this.server);
+    const io: socketIO.Server = socketIO(this.server);
 
-    io.on('connection', function(socket: Socket): void {
+    io.on('connection', function(socket: socketIO.Socket): void {
       _this.socket = socket;
     });
   }
@@ -188,10 +187,10 @@ class Server {
   // file
   async getFile(): Promise<void> {
     // 查找脚本位置
-    const socketIoPath: string = require.resolve('socket.io-client');
-    const socketIoPathFile: string = path.join(path.parse(socketIoPath).dir, '../dist/socket.io.js');
+    const socketIOPath: string = require.resolve('socket.io-client');
+    const socketIOPathFile: string = path.join(path.parse(socketIOPath).dir, '../dist/socket.io.js');
 
-    this.socketIoScript = await fs.promises.readFile(socketIoPathFile);
+    this.socketIOScript = await fs.promises.readFile(socketIOPathFile);
     this.clientScript = (await fs.promises.readFile(path.join(__dirname, 'client.js'))).toString();
   }
 

@@ -29,5 +29,3 @@ export interface OutPath {
   file: string;
   dir: string;
 }
-
-export type Socket = { [key: string]: any };
