@@ -11,6 +11,9 @@ import * as Router from '@koa/router';
 import * as mime from 'mime-types';
 import * as MemoryFs from 'memory-fs';
 import * as socketIO from 'socket.io';
+import * as detectPort from 'detect-port';
+import * as address from 'address';
+import * as colors from 'colors/safe';
 import { ServerArgs, Https } from './types';
 
 class Server {
@@ -172,6 +175,11 @@ class Server {
     this.socket.emit('RELOAD');
   }
 
+  // 判断端口是否被占用，并使用新端口
+  async getPort(): Promise<void> {
+    this.port = await detectPort(this.port);
+  }
+
   // socket
   createSocket(): void {
     const _this: this = this;
@@ -192,10 +200,24 @@ class Server {
     this.clientScript = (await fs.promises.readFile(path.join(__dirname, 'client.js'))).toString();
   }
 
+  // 输出本机IP信息
+  runningAtLog(): void {
+    const ip: string = address.ip();
+    const protocol: string = this.https ? 'https' : 'http';
+    const logs: string[] = [
+      ' Running at:',
+      ` - Local:   ${ protocol }://127.0.0.1:${ this.port }`,
+      ` - Network: ${ protocol }://${ ip }:${ this.port }`
+    ];
+
+    console.log(`\n${ colors.cyan(logs.join('\n')) }\n`);
+  }
+
   // 初始化
   async init(): Promise<void> {
     this.createMiddleware();
     this.createRouters();
+    await this.getPort();
     await this.createServer();
 
     // 热更新
@@ -203,6 +225,8 @@ class Server {
       await this.getFile();
       this.createSocket();
     }
+
+    this.runningAtLog();
   }
 }
 
