@@ -1,3 +1,8 @@
+### v0.3.0
+
+* The new port is used when the service's port is occupied.
+* When the service starts, the address of the service is displayed.
+
 ### v0.2.1
 
 * Adjust the address of the websocket in the browser.
