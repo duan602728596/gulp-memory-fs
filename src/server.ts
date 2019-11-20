@@ -12,7 +12,7 @@ import * as mime from 'mime-types';
 import * as MemoryFs from 'memory-fs';
 import * as socketIO from 'socket.io';
 import * as detectPort from 'detect-port';
-import * as address from 'address';
+import * as internalIp from 'internal-ip';
 import * as colors from 'colors/safe';
 import { ServerArgs, Https } from './types';
 
@@ -201,8 +201,8 @@ class Server {
   }
 
   // 输出本机IP信息
-  runningAtLog(): void {
-    const ip: string = address.ip();
+  async runningAtLog(): Promise<void> {
+    const ip: string = await internalIp.v4() || '127.0.0.1';
     const protocol: string = this.https ? 'https' : 'http';
     const logs: string[] = [
       ' Running at:',
@@ -226,7 +226,7 @@ class Server {
       this.createSocket();
     }
 
-    this.runningAtLog();
+    await this.runningAtLog();
   }
 }
 
