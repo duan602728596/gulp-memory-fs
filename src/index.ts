@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { Stats } from 'fs';
 import * as MemoryFs from 'memory-fs';
+import { fs as ifs, IFs } from 'memfs';
 import * as through2 from 'through2';
 import * as PluginError from 'plugin-error';
 import Server from './server';
@@ -9,7 +10,7 @@ import { GulpMemoryFsArgs, File, OutPath, Https } from './types';
 class GulpMemoryFs {
   private PLUGIN_NAME: string;
   private mTime: Map<string, number>;
-  private fs: MemoryFs;
+  private fs: MemoryFs | IFs;
   private https?: Https;
   private reload: boolean;
   private server: Server;
@@ -20,12 +21,13 @@ class GulpMemoryFs {
       dir,
       https,
       reload,
-      reloadTime
+      reloadTime,
+      fsType
     }: GulpMemoryFsArgs = args;
 
-    this.PLUGIN_NAME = 'gulp-memory-fs';    // 插件名
-    this.mTime = new Map<string, number>(); // 记录缓存时间
-    this.fs = new MemoryFs();               // 内存文件系统
+    this.PLUGIN_NAME = 'gulp-memory-fs';                 // 插件名
+    this.mTime = new Map<string, number>();              // 记录缓存时间
+    this.fs = fsType === 'memfs' ? ifs : new MemoryFs(); // 内存文件系统
 
     this.https = https;
     this.reload = !!reload;

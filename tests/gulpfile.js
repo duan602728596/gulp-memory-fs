@@ -4,7 +4,8 @@ const GulpMemoryFs = require('../cjs');
 
 const gulpMemoryFs = new GulpMemoryFs({
   dir: 'dist',
-  reload: true
+  reload: true,
+  fsType: 'memfs'
 });
 
 function js() {

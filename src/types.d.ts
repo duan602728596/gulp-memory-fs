@@ -12,6 +12,7 @@ export interface GulpMemoryFsArgs {
   https?: Https;
   reload?: boolean;
   reloadTime?: number;
+  fsType?: 'memory-fs' | 'memfs';
 }
 
 export interface ServerArgs extends GulpMemoryFsArgs {
