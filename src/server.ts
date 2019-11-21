@@ -21,8 +21,6 @@ import * as colors from 'colors/safe';
 import * as _ from 'lodash';
 import { ServerArgs, Https, KoaFunc } from './types';
 
-
-
 class Server {
   private port: number;
   private dir: string;
