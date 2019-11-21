@@ -1,3 +1,4 @@
+import './alias';
 import * as path from 'path';
 import { ParsedPath } from 'path';
 import * as http from 'http';
@@ -18,11 +19,9 @@ import * as detectPort from 'detect-port';
 import * as internalIp from 'internal-ip';
 import * as colors from 'colors/safe';
 import * as _ from 'lodash';
-import * as moduleAlias from 'module-alias';
 import { ServerArgs, Https, KoaFunc } from './types';
 
-// TODO: http-proxy模块不支持http2
-moduleAlias.addAlias('http-proxy', '@bbkkbkk/http-proxy');
+
 
 class Server {
   private port: number;
