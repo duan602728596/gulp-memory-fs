@@ -1,3 +1,9 @@
+### v0.4.0
+
+* Allows the use of `memory-fs` or `memfs` memory file systems through configuration.
+* Service can configure mock data.
+* Service can configure proxy.
+
 ### v0.3.0
 
 * The new port is used when the service's port is occupied.
