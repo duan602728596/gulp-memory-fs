@@ -24,6 +24,13 @@ const gulpMemoryFs = new GulpMemoryFs({
   dir: 'dist',
   reload: true,
   fsType: 'memfs',
+  /*
+  // https配置
+  https: {
+    key: path.join(__dirname, '../dev.key'),
+    cert: path.join(__dirname, '../dev.crt')
+  },
+  */
   mock,
   proxy
 });
