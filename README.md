@@ -4,7 +4,7 @@
 
 ![](demonstrate.gif)
 
-`gulp-memory-fs` allows developers to use the memory file system ( [memory-fs](https://github.com/webpack/memory-fs) ) when building with gulp。
+`gulp-memory-fs` allows developers to use the memory file system ( [memory-fs](https://github.com/webpack/memory-fs) or [memfs](https://github.com/streamich/memfs) ) when building with gulp。
 
 ## Start Using
 
@@ -42,14 +42,16 @@ Open the browser and type `http://127.0.0.1:7777/` to start development.
 
 ### GulpMemoryFs
 
-| Parameter  | Type                           | Description                                                                 | Default |
-| ---        | ---                            | ---                                                                         | ---     |
-| port       | number                         | Service port number                                                         | 7777    |
-| dir        | string                         | Directory of resources                                                      | &nbsp;  |
-| https      | { key: string; cert: string; } | Configure the file address of the https certificate, service enables https. | &nbsp;  |
-| reload     | boolean                        | Whether the browser refreshes when the file is saved                        | false   |
-| reloadTime | number                         | Delayed refresh time of the browser after the file is modified              | 250     |
-| fsType     | 'memory-fs' &#124; 'memfs'     | Memory file system used                                                     | 'memory-fs' |
+| Parameter  | Type                           | Description                                                                    | Default     |
+| ---        | ---                            | ---                                                                            | ---         |
+| port       | number                         | Service port number                                                            | 7777        |
+| dir        | string                         | Directory of resources                                                         | &nbsp;      |
+| https      | { key: string; cert: string; } | Configure the file address of the https certificate, service enables https.    | &nbsp;      |
+| reload     | boolean                        | Whether the browser refreshes when the file is saved                           | false       |
+| reloadTime | number                         | Delayed refresh time of the browser after the file is modified                 | 250         |
+| fsType     | 'memory-fs' &#124; 'memfs'     | Memory file system used                                                        | 'memory-fs' |
+| mock       | { [key: string]: any &#124; ((ctx: Context, next: Function) => void | Promise<void>); } | Configuring mock data | &nbsp;      |
+| proxy      | { [key: string]: object; }     | Configuring the proxy                                                          | &nbsp;      |
 
 ### GulpMemoryFs.prototype.changed & GulpMemoryFs.prototype.dest
 
@@ -62,3 +64,45 @@ Since it is a memory file system, you cannot use `gulp-changed` and use `GulpMem
 ### GulpMemoryFs.prototype.createServer
 
 Start the service.
+
+## Mock
+
+The mapping rules of mock are as follows:
+
+```javascript
+const mock = {
+  // How to use
+  'GET /mock/data': { data: [1, 2] },
+
+  // When the request method is omitted, the default request method is GET
+  '/mock/data': { data: [1, 2] },
+
+  // Support for custom functions, API reference koa and @koa/router
+  'POST /mock/data': (ctx, next) => ctx.body = 'ok'
+};
+```
+
+## Proxy
+
+The rules of the proxy are as follows:
+
+```javascript
+const proxy = {
+  '/proxy/raw/githubusercontent': {
+    target: 'https://raw.githubusercontent.com/',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/proxy/raw/githubusercontent': ''
+    }
+  }
+};
+```
+
+Proxy configuration reference [http-proxy-middleware](https://github.com/chimurai/http-proxy-middleware).
+
+## Test
+
+```
+npm run example
+npm run test
+```
