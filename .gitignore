@@ -14,3 +14,5 @@ yarn-error.log
 # project
 lib
 example/dist
+*.crt
+*.key

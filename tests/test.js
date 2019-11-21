@@ -31,4 +31,12 @@ describe('gulp-memory-fs test', function() {
       expect(res4.data).to.be.eql({ name: 'test', value: 32 });
     });
   });
+
+  describe('proxy data test', function() {
+    it('should get mock data and return the correct value', async function() {
+      const res0 = await axios.get(`${ basePath }/proxy/raw/githubusercontent/duan602728596/gulp-memory-fs/master/package.json`);
+
+      expect(res0.data.name).to.be.equal('gulp-memory-fs');
+    });
+  });
 });
