@@ -2,7 +2,7 @@ interface ClientArgs {
   reloadTime: number;
 }
 
-let timer: any = undefined;
+let timer: number | undefined = undefined;
 
 function createSocketReloadFunc(reloadTime: number): Function {
   return function handleSocketReload(data: any): void {
@@ -10,7 +10,7 @@ function createSocketReloadFunc(reloadTime: number): Function {
       clearTimeout(timer);
     }
 
-    timer = setTimeout(function(): void {
+    timer = window.setTimeout(function(): void {
       /* reload */
       window.location.reload();
       timer = undefined;
