@@ -39,7 +39,7 @@ class Server {
   private router: Router;
 
   private server: Http1Server | Http2SecureServer;
-  private socket: socketIO.Socket;
+  private socket: Set<socketIO.Socket>;
 
   private socketIOScript: Buffer;
   private clientScript: string;
@@ -67,6 +67,7 @@ class Server {
 
     this.app = new Koa();
     this.router = new Router();
+    this.socket = new Set();
   }
 
   // gulp-memory-fs注入的文件解析
@@ -226,9 +227,9 @@ class Server {
 
   // reload
   reloadFunc(): void {
-    if (!this.socket) return;
-
-    this.socket.emit('RELOAD');
+    for (const socket of this.socket) {
+      socket.emit('RELOAD');
+    }
   }
 
   // 判断端口是否被占用，并使用新端口
@@ -242,7 +243,11 @@ class Server {
     const io: socketIO.Server = socketIO(this.server);
 
     io.on('connection', function(socket: socketIO.Socket): void {
-      _this.socket = socket;
+      socket.on('disconnect', function(): void {
+        _this.socket.delete(socket);
+      });
+
+      _this.socket.add(socket);
     });
   }
 
