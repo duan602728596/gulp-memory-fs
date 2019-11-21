@@ -219,7 +219,7 @@ class Server {
     await this.getPort();
     await this.createServer();
 
-    // 热更新
+    // 是否刷新
     if (this.reload) {
       await this.getFile();
       this.createSocket();
