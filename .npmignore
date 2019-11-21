@@ -23,3 +23,6 @@ gulpfile.js
 .eslintrc.yml
 tsconfig.json
 *.gif
+
+*.key
+*.crt
