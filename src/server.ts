@@ -10,6 +10,7 @@ import { Context } from 'koa';
 import * as Router from '@koa/router';
 import * as mime from 'mime-types';
 import * as MemoryFs from 'memory-fs';
+import { IFs } from 'memfs';
 import * as socketIO from 'socket.io';
 import * as detectPort from 'detect-port';
 import * as internalIp from 'internal-ip';
@@ -20,7 +21,7 @@ import { ServerArgs, Https, KoaFunc } from './types';
 class Server {
   private port: number;
   private dir: string;
-  private fs: MemoryFs;
+  private fs: MemoryFs | IFs;
   private https?: Https;
   private reload: boolean;
   private reloadTime: number;

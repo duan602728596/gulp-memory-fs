@@ -1,5 +1,6 @@
 import { Stats } from 'fs';
 import * as MemoryFs from 'memory-fs';
+import { IFs } from 'memfs';
 import { Context } from 'koa';
 
 /* https证书配置项 */
@@ -40,5 +41,5 @@ export interface OutPath {
 
 /* Server的传递参数 */
 export interface ServerArgs extends Omit<GulpMemoryFsArgs, 'fsType'> {
-  fs: MemoryFs;
+  fs: MemoryFs | IFs;
 }
