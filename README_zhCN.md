@@ -48,7 +48,7 @@ exports.default = gulp.series(
 | reload     | boolean                        | 文件保存时，浏览器是否刷新             | false       |
 | reloadTime | number                         | 文件修改后，浏览器的延迟刷新时间       | 250         |
 | fsType     | 'memory-fs' &#124; 'memfs'     | 使用的内存文件系统                     | 'memory-fs' |
-| mock       | { [key: string]: any &#124; ((ctx: Context, next: Function) => void | Promise<void>); } | 配置mock数据 | &nbsp; |
+| mock       | { [key: string]: any &#124; ((ctx: Context, next: Function) => void &#124; Promise<void>); } | 配置mock数据 | &nbsp; |
 | proxy      | { [key: string]: object; }     | 配置代理                               | &nbsp;      |
 
 ### GulpMemoryFs.prototype.changed & GulpMemoryFs.prototype.dest
