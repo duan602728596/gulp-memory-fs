@@ -14,7 +14,8 @@ import * as socketIO from 'socket.io';
 import * as detectPort from 'detect-port';
 import * as internalIp from 'internal-ip';
 import * as colors from 'colors/safe';
-import { ServerArgs, Https } from './types';
+import * as _ from 'lodash';
+import { ServerArgs, Https, KoaFunc } from './types';
 
 class Server {
   private port: number;
@@ -23,6 +24,9 @@ class Server {
   private https?: Https;
   private reload: boolean;
   private reloadTime: number;
+  private mock?: {
+    [key: string]: any | KoaFunc;
+  };
 
   private app: Koa;
   private router: Router;
@@ -35,12 +39,13 @@ class Server {
 
   constructor(args: ServerArgs) {
     const {
-      port,      // 服务监听的端口号
-      dir,       // 服务的文件目录
-      fs,        // 内存文件系统
-      https,     // http2
-      reload,    // 是否刷新
-      reloadTime // 刷新时间
+      port,       // 服务监听的端口号
+      dir,        // 服务的文件目录
+      fs,         // 内存文件系统
+      https,      // http2
+      reload,     // 是否刷新
+      reloadTime, // 刷新时间
+      mock        // mock数据
     }: ServerArgs = args;
 
     this.port = port || 7777;
@@ -49,6 +54,7 @@ class Server {
     this.https = https;
     this.reload = !!reload;
     this.reloadTime = reloadTime || 250;
+    this.mock = mock;
 
     this.app = new Koa();
     this.router = new Router();
@@ -90,6 +96,33 @@ class Server {
     }
 
     return false;
+  }
+
+  // 创建mock路由
+  createMockRouters(): void {
+    if (!this.mock) return;
+
+    for (const key in this.mock) {
+      // 拆分，解析方法
+      const formatData: string[] = _.without(key.split(/\s+/), '');
+      let method: string = 'get';
+      let uri: string = '';
+
+      if (formatData.length === 0) continue;
+
+      if (formatData.length === 1) uri = formatData[0];
+      else [method, uri] = [formatData[0].toLocaleLowerCase(), formatData[1]];
+
+      // 判断router是否有该方法
+      method = method in this.router ? method : 'get';
+
+      const value: KoaFunc | any = this.mock[key];
+      const routerFunc: KoaFunc = typeof value === 'function'
+        ? value
+        : (ctx: Context, next: Function): void => ctx.body = value;
+
+      this.router[method](routerFunc);
+    }
   }
 
   // 创建路由
@@ -215,6 +248,7 @@ class Server {
   // 初始化
   async init(): Promise<void> {
     this.createMiddleware();
+    this.createMockRouters();
     this.createRouters();
     await this.getPort();
     await this.createServer();

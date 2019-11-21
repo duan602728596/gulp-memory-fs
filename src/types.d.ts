@@ -1,11 +1,15 @@
 import { Stats } from 'fs';
 import * as MemoryFs from 'memory-fs';
+import { Context } from 'koa';
 
 /* https证书配置项 */
 export interface Https {
   key: string;
   cert: string;
 }
+
+/* koa function */
+export type KoaFunc = (ctx: Context, next: Function) => void | Promise<void>;
 
 /* 传递参数 */
 export interface GulpMemoryFsArgs {
@@ -15,6 +19,9 @@ export interface GulpMemoryFsArgs {
   reload?: boolean;
   reloadTime?: number;
   fsType?: 'memory-fs' | 'memfs';
+  mock?: {
+    [key: string]: any | KoaFunc;
+  };
 }
 
 /* 文件的参数 */

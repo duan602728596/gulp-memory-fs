@@ -22,7 +22,8 @@ class GulpMemoryFs {
       https,
       reload,
       reloadTime,
-      fsType
+      fsType,
+      mock
     }: GulpMemoryFsArgs = args;
 
     this.PLUGIN_NAME = 'gulp-memory-fs';                 // 插件名
@@ -39,7 +40,8 @@ class GulpMemoryFs {
       dir: this.getDir(dir),
       https,
       reload,
-      reloadTime
+      reloadTime,
+      mock
     });
   }
 
