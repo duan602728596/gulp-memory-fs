@@ -18,7 +18,8 @@
     "gulp",
     "gulpplugin",
     "gulp-memory-fs",
-    "memory-fs"
+    "memory-fs",
+    "memfs"
   ],
   "scripts": {
     "start": "rimraf lib && tsc --watch",
