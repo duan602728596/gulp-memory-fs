@@ -121,7 +121,7 @@ class Server {
         ? value
         : (ctx: Context, next: Function): void => ctx.body = value;
 
-      this.router[method](routerFunc);
+      this.router[method](uri, routerFunc);
     }
   }
 

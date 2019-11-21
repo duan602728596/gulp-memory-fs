@@ -2,10 +2,19 @@ const gulp = require('gulp');
 const path = require('path');
 const GulpMemoryFs = require('../cjs');
 
+const mock = {
+  'GET /mock/0': [0, 1, 2, 3],
+  '/mock/1': { name: 'test', value: 12 },
+  'GET /mock/2': 'Hello, world.',
+  'POST /mock/3': [{ name: 'test', value: 22 }],
+  '/mock/4': (ctx, next) => ctx.body = { name: 'test', value: 32 }
+};
+
 const gulpMemoryFs = new GulpMemoryFs({
   dir: 'dist',
   reload: true,
-  fsType: 'memfs'
+  fsType: 'memfs',
+  mock
 });
 
 function js() {
