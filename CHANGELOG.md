@@ -3,6 +3,7 @@
 * Allows the use of `memory-fs` or `memfs` memory file systems through configuration.
 * Service can configure mock data.
 * Service can configure proxy.
+* Socket can listen to multiple pages.
 
 ### v0.3.0
 
