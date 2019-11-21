@@ -10,11 +10,22 @@ const mock = {
   '/mock/4': (ctx, next) => ctx.body = { name: 'test', value: 32 }
 };
 
+const proxy = {
+  '/proxy/raw/githubusercontent': {
+    target: 'https://raw.githubusercontent.com/',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/proxy/raw/githubusercontent': ''
+    }
+  }
+};
+
 const gulpMemoryFs = new GulpMemoryFs({
   dir: 'dist',
   reload: true,
   fsType: 'memfs',
-  mock
+  mock,
+  proxy
 });
 
 function js() {

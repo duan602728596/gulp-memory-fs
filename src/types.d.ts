@@ -23,6 +23,9 @@ export interface GulpMemoryFsArgs {
   mock?: {
     [key: string]: any | KoaFunc;
   };
+  proxy?: {
+    [key: string]: object;
+  };
 }
 
 /* 文件的参数 */

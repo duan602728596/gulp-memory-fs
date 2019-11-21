@@ -8,6 +8,8 @@ import * as fs from 'fs';
 import * as Koa from 'koa';
 import { Context } from 'koa';
 import * as Router from '@koa/router';
+import * as connect from 'koa-connect';
+import * as proxy from 'http-proxy-middleware';
 import * as mime from 'mime-types';
 import * as MemoryFs from 'memory-fs';
 import { IFs } from 'memfs';
@@ -16,7 +18,11 @@ import * as detectPort from 'detect-port';
 import * as internalIp from 'internal-ip';
 import * as colors from 'colors/safe';
 import * as _ from 'lodash';
+import * as moduleAlias from 'module-alias';
 import { ServerArgs, Https, KoaFunc } from './types';
+
+// TODO: http-proxy模块不支持http2
+moduleAlias.addAlias('http-proxy', '@bbkkbkk/http-proxy');
 
 class Server {
   private port: number;
@@ -27,6 +33,9 @@ class Server {
   private reloadTime: number;
   private mock?: {
     [key: string]: any | KoaFunc;
+  };
+  private proxy?: {
+    [key: string]: object;
   };
 
   private app: Koa;
@@ -46,7 +55,8 @@ class Server {
       https,      // http2
       reload,     // 是否刷新
       reloadTime, // 刷新时间
-      mock        // mock数据
+      mock,       // mock数据
+      proxy
     }: ServerArgs = args;
 
     this.port = port || 7777;
@@ -56,15 +66,10 @@ class Server {
     this.reload = !!reload;
     this.reloadTime = reloadTime || 250;
     this.mock = mock;
+    this.proxy = proxy;
 
     this.app = new Koa();
     this.router = new Router();
-  }
-
-  // 创建中间件
-  createMiddleware(): void {
-    this.app.use(this.router.routes())
-      .use(this.router.allowedMethods());
   }
 
   // gulp-memory-fs注入的文件解析
@@ -97,6 +102,27 @@ class Server {
     }
 
     return false;
+  }
+
+  // 创建proxy的中间件
+  createProxyMiddleware(): void {
+    if (!this.proxy) return;
+
+    for (const key in this.proxy) {
+      this.app.use(connect(
+        proxy(key, {
+          changeOrigin: true,
+          logLevel: 'info',
+          ...this.proxy[key]
+        })
+      ));
+    }
+  }
+
+  // 创建中间件
+  createMiddleware(): void {
+    this.app.use(this.router.routes())
+      .use(this.router.allowedMethods());
   }
 
   // 创建mock路由
@@ -248,6 +274,7 @@ class Server {
 
   // 初始化
   async init(): Promise<void> {
+    this.createProxyMiddleware();
     this.createMiddleware();
     this.createMockRouters();
     this.createRouters();
