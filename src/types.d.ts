@@ -1,11 +1,13 @@
 import { Stats } from 'fs';
 import * as MemoryFs from 'memory-fs';
 
+/* https证书配置项 */
 export interface Https {
   key: string;
   cert: string;
 }
 
+/* 传递参数 */
 export interface GulpMemoryFsArgs {
   port: number;
   dir: string;
@@ -15,10 +17,7 @@ export interface GulpMemoryFsArgs {
   fsType?: 'memory-fs' | 'memfs';
 }
 
-export interface ServerArgs extends GulpMemoryFsArgs {
-  fs: MemoryFs;
-}
-
+/* 文件的参数 */
 export interface File {
   isStream: () => boolean;
   contents: Buffer;
@@ -26,7 +25,13 @@ export interface File {
   stat: Stats;
 }
 
+/* 输出路径 */
 export interface OutPath {
   file: string;
   dir: string;
+}
+
+/* Server的传递参数 */
+export interface ServerArgs extends Omit<GulpMemoryFsArgs, 'fsType'> {
+  fs: MemoryFs;
 }

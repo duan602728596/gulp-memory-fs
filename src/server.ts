@@ -39,8 +39,8 @@ class Server {
       dir,       // 服务的文件目录
       fs,        // 内存文件系统
       https,     // http2
-      reload,    // 热更新
-      reloadTime // 更新时间
+      reload,    // 是否刷新
+      reloadTime // 刷新时间
     }: ServerArgs = args;
 
     this.port = port || 7777;
