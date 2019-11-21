@@ -40,20 +40,21 @@ exports.default = gulp.series(
 
 ### GulpMemoryFs
 
-| 参数 | 类型 |  说明 | 默认值 |
-| --- | --- | --- | --- |
-| port | number | 服务的端口号 | 7777 |
-| dir | string | 资源的目录 | &nbsp; |
-| https | { key: string; cert: string; } | 配置https证书的文件地址，服务启用https | &nbsp; |
-| reload | boolean | 文件保存时，浏览器是否刷新 | false |
-| reloadTime | number | 文件修改后，浏览器的延迟刷新时间 | 250 |
+| 参数       | 类型                           | 说明                                   | 默认值      |
+| ---        | ---                            | ---                                    | ---         |
+| port       | number                         | 服务的端口号                           | 7777        |
+| dir        | string                         | 资源的目录                             | &nbsp;      |
+| https      | { key: string; cert: string; } | 配置https证书的文件地址，服务启用https | &nbsp;      |
+| reload     | boolean                        | 文件保存时，浏览器是否刷新             | false       |
+| reloadTime | number                         | 文件修改后，浏览器的延迟刷新时间       | 250         |
+| fsType     | 'memory-fs' &#124; 'memfs'     | 使用的内存文件系统                     | 'memory-fs' |
 
 ### GulpMemoryFs.prototype.changed & GulpMemoryFs.prototype.dest
 
 由于是内存文件系统，无法使用`gulp-changed`，使用`GulpMemoryFs.prototype.changed`来只编译修改后的文件。
 
-| 参数 | 类型 |  说明 |
-| --- | --- | --- |
+| 参数   | 类型   |  说明          |
+| ---    | ---    | ---            |
 | output | string | 输出文件的目录 |
 
 ### GulpMemoryFs.prototype.createServer

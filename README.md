@@ -42,21 +42,22 @@ Open the browser and type `http://127.0.0.1:7777/` to start development.
 
 ### GulpMemoryFs
 
-| Parameter | Type | Description | Default |
-| --- | --- | --- | --- |
-| port | number | Service port number | 7777 |
-| dir | string | Directory of resources | &nbsp; |
-| https | { key: string; cert: string; } | Configure the file address of the https certificate, service enables https. | &nbsp; |
-| reload | boolean | Whether the browser refreshes when the file is saved | false |
-| reloadTime | number | Delayed refresh time of the browser after the file is modified | 250 |
+| Parameter  | Type                           | Description                                                                 | Default |
+| ---        | ---                            | ---                                                                         | ---     |
+| port       | number                         | Service port number                                                         | 7777    |
+| dir        | string                         | Directory of resources                                                      | &nbsp;  |
+| https      | { key: string; cert: string; } | Configure the file address of the https certificate, service enables https. | &nbsp;  |
+| reload     | boolean                        | Whether the browser refreshes when the file is saved                        | false   |
+| reloadTime | number                         | Delayed refresh time of the browser after the file is modified              | 250     |
+| fsType     | 'memory-fs' &#124; 'memfs'     | Memory file system used                                                     | 'memory-fs' |
 
 ### GulpMemoryFs.prototype.changed & GulpMemoryFs.prototype.dest
 
 Since it is a memory file system, you cannot use `gulp-changed` and use `GulpMemoryFs.prototype.changed` to compile only the modified file.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| output | string | Output file directory |
+| Parameter | Type   | Description           |
+| ---       | ---    | ---                   |
+| output    | string | Output file directory |
 
 ### GulpMemoryFs.prototype.createServer
 
