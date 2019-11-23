@@ -21,7 +21,7 @@ function build() {
 }
 
 async function server() {
-  await gulpMemoryFs.createServer();
+  await mfs.createServer();
 }
 
 function watch() {
