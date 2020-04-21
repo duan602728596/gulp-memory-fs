@@ -10,7 +10,7 @@ import * as Koa from 'koa';
 import { Context } from 'koa';
 import * as Router from '@koa/router';
 import * as connect from 'koa-connect';
-import * as proxy from 'http-proxy-middleware';
+import { createProxyMiddleware, Options } from 'http-proxy-middleware';
 import * as mime from 'mime-types';
 import * as MemoryFs from 'memory-fs';
 import { IFs } from 'memfs';
@@ -32,7 +32,7 @@ class Server {
     [key: string]: any | KoaFunc;
   };
   private proxy?: {
-    [key: string]: object;
+    [key: string]: Options;
   };
 
   private app: Koa;
@@ -108,7 +108,7 @@ class Server {
 
     for (const key in this.proxy) {
       this.app.use(connect(
-        proxy(key, {
+        createProxyMiddleware(key, {
           changeOrigin: true,
           logLevel: 'info',
           ...this.proxy[key]
