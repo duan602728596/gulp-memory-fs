@@ -154,7 +154,7 @@ class Server {
   createRouters(): void {
     const _this: this = this;
 
-    this.router.get('/*', function(ctx: Context, next: Function): void {
+    this.router.get(/^\/.*/, function(ctx: Context, next: Function): void {
       try {
         const ctxPath: string = ctx.path === '/' ? '/index.html' : ctx.path; // 路径
         const filePath: string = path.join(_this.dir, ctxPath)               // 文件
