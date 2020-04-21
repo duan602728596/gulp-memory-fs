@@ -24,8 +24,8 @@
   "scripts": {
     "start": "rimraf lib && tsc --watch",
     "build": "rimraf lib && gulp",
-    "example": "gulp --gulpfile tests/gulpfile.js",
-    "test": "mocha ./tests/test.js --timeout 180000",
+    "example": "gulp --gulpfile test/gulpfile.js",
+    "test": "mocha ./test/test.js --timeout 180000",
     "eslint": "eslint ./ --ext .js,.jsx,.ts,.tsx --fix"
   },
   "dependencies": {
