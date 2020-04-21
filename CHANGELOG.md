@@ -1,3 +1,8 @@
+### v0.5.0
+
+* The memory file system uses `memfs` by default.
+* Upgrade depends on the latest version.
+
 ### v0.4.0
 
 * Allows the use of `memory-fs` or `memfs` memory file systems through configuration.
