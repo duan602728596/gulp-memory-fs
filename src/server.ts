@@ -56,12 +56,12 @@ class Server {
       proxy
     }: ServerArgs = args;
 
-    this.port = port || 7777;
+    this.port = port ?? 7777;
     this.dir = dir;
     this.fs = fs;
     this.https = https;
     this.reload = !!reload;
-    this.reloadTime = reloadTime || 250;
+    this.reloadTime = reloadTime ?? 250;
     this.mock = mock;
     this.proxy = proxy;
 
