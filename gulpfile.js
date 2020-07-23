@@ -3,9 +3,14 @@ const typescript = require('gulp-typescript');
 const terser = require('gulp-terser');
 const tsconfig = require('./tsconfig.json');
 
+const tsOptions = {
+  ...tsconfig.compilerOptions,
+  skipLibCheck: true
+};
+
 function serverBuild() {
   const result = gulp.src('src/**/!(client).ts')
-    .pipe(typescript(tsconfig.compilerOptions));
+    .pipe(typescript(tsOptions));
 
   return result.js.pipe(gulp.dest('lib'));
 }
@@ -13,7 +18,7 @@ function serverBuild() {
 function clientBuild() {
   const result = gulp.src('src/client.ts')
     .pipe(typescript({
-      ...tsconfig.compilerOptions,
+      ...tsOptions,
       target: 'ES3'
     }));
 
