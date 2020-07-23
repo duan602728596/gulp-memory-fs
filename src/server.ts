@@ -17,7 +17,7 @@ import { IFs } from 'memfs';
 import * as socketIO from 'socket.io';
 import * as detectPort from 'detect-port';
 import * as internalIp from 'internal-ip';
-import * as colors from 'colors/safe';
+import * as chalk from 'chalk';
 import * as _ from 'lodash';
 import { ServerArgs, Https, KoaFunc } from './types';
 
@@ -271,7 +271,7 @@ class Server {
       ` - Network: ${ protocol }://${ ip }:${ this.port }`
     ];
 
-    console.log(`\n${ colors.cyan(logs.join('\n')) }\n`);
+    console.log(`\n${ chalk.cyan(logs.join('\n')) }\n`);
   }
 
   // 初始化
