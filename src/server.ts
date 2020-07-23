@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import * as Koa from 'koa';
 import { Context } from 'koa';
 import * as Router from '@koa/router';
-import * as connect from 'koa-connect';
+import connect = require('koa-connect');
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
 import * as mime from 'mime-types';
 import * as MemoryFs from 'memory-fs';
@@ -135,8 +135,12 @@ class Server {
 
       if (formatData.length === 0) continue;
 
-      if (formatData.length === 1) uri = formatData[0];
-      else [method, uri] = [formatData[0].toLocaleLowerCase(), formatData[1]];
+      if (formatData.length === 1) {
+        uri = formatData[0];
+      } else {
+        // eslint-disable-next-line @typescript-eslint/typedef
+        [method, uri] = [formatData[0].toLocaleLowerCase(), formatData[1]];
+      }
 
       // 判断router是否有该方法
       method = method in this.router ? method : 'get';
