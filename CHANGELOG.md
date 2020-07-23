@@ -1,3 +1,8 @@
+### v0.6.0
+
+* Upgrade `@koa/router` to v9 version.
+* Upgrade depends on the latest version.
+
 ### v0.5.0
 
 * The memory file system uses `memfs` by default.
