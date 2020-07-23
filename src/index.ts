@@ -1,11 +1,11 @@
 import * as path from 'path';
-import { Stats } from 'fs';
+import type { Stats } from 'fs';
 import * as MemoryFs from 'memory-fs';
 import { fs as ifs, IFs } from 'memfs';
 import * as through2 from 'through2';
 import * as PluginError from 'plugin-error';
 import Server from './server';
-import { GulpMemoryFsArgs, File, OutPath, Https } from './types';
+import type { GulpMemoryFsArgs, File, OutPath, Https } from './types';
 
 class GulpMemoryFs {
   private PLUGIN_NAME: string;

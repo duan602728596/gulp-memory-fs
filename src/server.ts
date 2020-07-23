@@ -1,25 +1,25 @@
 import './alias';
 import * as path from 'path';
-import { ParsedPath } from 'path';
+import type { ParsedPath } from 'path';
 import * as http from 'http';
-import { Server as Http1Server } from 'http';
+import type { Server as Http1Server } from 'http';
 import * as http2 from 'http2';
-import { SecureServerOptions, Http2SecureServer } from 'http2';
+import type { SecureServerOptions, Http2SecureServer } from 'http2';
 import * as fs from 'fs';
 import * as Koa from 'koa';
-import { Context } from 'koa';
+import type { Context } from 'koa';
 import * as Router from '@koa/router';
 import connect = require('koa-connect');
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
 import * as mime from 'mime-types';
 import * as MemoryFs from 'memory-fs';
-import { IFs } from 'memfs';
+import type { IFs } from 'memfs';
 import * as socketIO from 'socket.io';
 import * as detectPort from 'detect-port';
 import * as internalIp from 'internal-ip';
 import * as chalk from 'chalk';
 import * as _ from 'lodash';
-import { ServerArgs, Https, KoaFunc } from './types';
+import type { ServerArgs, Https, KoaFunc } from './types';
 
 class Server {
   private port: number;

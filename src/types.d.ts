@@ -1,7 +1,7 @@
-import { Stats } from 'fs';
+import type { Stats } from 'fs';
 import * as MemoryFs from 'memory-fs';
-import { IFs } from 'memfs';
-import { Context } from 'koa';
+import type { IFs } from 'memfs';
+import type { Context } from 'koa';
 
 /* https证书配置项 */
 export interface Https {
