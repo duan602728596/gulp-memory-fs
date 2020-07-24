@@ -1,3 +1,7 @@
+### v0.6.1
+
+* Use `createFsFromVolume` and `Volume` to create a memory system.
+
 ### v0.6.0
 
 * Upgrade `@koa/router` to v9 version.

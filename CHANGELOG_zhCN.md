@@ -1,3 +1,7 @@
+### v0.6.1
+
+* 使用`createFsFromVolume`和`Volume`创建内存系统。
+
 ### v0.6.0
 
 * 升级`@koa/router`到v9版本。
