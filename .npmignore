@@ -24,8 +24,6 @@ gulpfile.js
 .eslintrc.yml
 .eslintrc.js
 babel.config.js
-CHANGELOG.md
-CHANGELOG_zhCN.md
 tsconfig.json
 *.gif
 
