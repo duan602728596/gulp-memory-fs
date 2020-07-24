@@ -1,7 +1,7 @@
 import * as path from 'path';
 import type { Stats } from 'fs';
 import * as MemoryFs from 'memory-fs';
-import { fs as ifs, IFs } from 'memfs';
+import { createFsFromVolume, Volume, IFs } from 'memfs';
 import * as through2 from 'through2';
 import * as PluginError from 'plugin-error';
 import Server from './server';
@@ -29,8 +29,7 @@ class GulpMemoryFs {
 
     this.PLUGIN_NAME = 'gulp-memory-fs';    // 插件名
     this.mTime = new Map<string, number>(); // 记录缓存时间
-    this.fs = fsType === 'memory-fs' ? new MemoryFs() : ifs; // 内存文件系统
-
+    this.fs = fsType === 'memory-fs' ? new MemoryFs() : createFsFromVolume(new Volume()); // 内存文件系统
     this.https = https;
     this.reload = !!reload;
 
