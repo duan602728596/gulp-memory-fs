@@ -244,7 +244,7 @@ class Server {
   // socket
   createSocket(): void {
     const _this: this = this;
-    const io: socketIO.Server = socketIO(this.server as Http1Server);
+    const io: socketIO.Server = new socketIO.Server(this.server as Http1Server);
 
     io.on('connection', function(socket: socketIO.Socket): void {
       socket.on('disconnect', function(): void {
