@@ -1,3 +1,11 @@
+### v1.0.0
+
+* Upgrade all dependencies to the latest version.
+* Modify the url of the injected script.
+* Fix the request problem of the map file injected into the script.
+* `mfs.changed` and `mfs.dest` methods, the default parameter is the directory `dir` of the configured resource.
+* Other optimizations.
+
 ### v0.6.1
 
 * Use `createFsFromVolume` and `Volume` to create a memory system.
