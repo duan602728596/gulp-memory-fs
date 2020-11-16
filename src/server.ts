@@ -72,7 +72,7 @@ class Server {
 
   // gulp-memory-fs注入的文件解析
   fileParsing(ctxPath: string, ctx: Context): boolean {
-    if (/^\/gulp-memory-fs/i.test(ctxPath)) {
+    if (/^\/@@\/gulp-memory-fs/i.test(ctxPath)) {
       const result: ParsedPath = path.parse(ctxPath);
 
       if (result.name === 'socket.io') {
@@ -222,8 +222,8 @@ class Server {
   // 注入脚本
   injectionScripts(html: string): string {
     const scripts: string = '\n\n<!-- gulp-memory-fs injection scripts start -->\n'
-      + '<script src="/gulp-memory-fs/socket.io.js"></script>\n'
-      + '<script src="/gulp-memory-fs/client.js"></script>\n'
+      + '<script src="/@@/gulp-memory-fs/socket.io.js"></script>\n'
+      + '<script src="/@@/gulp-memory-fs/client.js"></script>\n'
       + '<!-- gulp-memory-fs injection scripts end -->';
 
     return `${ html }${ scripts }`;
