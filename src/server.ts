@@ -6,6 +6,8 @@ import type { Server as Http1Server } from 'http';
 import * as http2 from 'http2';
 import type { SecureServerOptions, Http2SecureServer } from 'http2';
 import * as fs from 'fs';
+import * as net from 'net';
+import type { Server as NetServer } from 'net';
 import * as Koa from 'koa';
 import type { Context } from 'koa';
 import * as Router from '@koa/router';
@@ -15,7 +17,6 @@ import * as mime from 'mime-types';
 import * as MemoryFs from 'memory-fs';
 import type { IFs } from 'memfs';
 import * as socketIO from 'socket.io';
-import * as detectPort from 'detect-port';
 import * as internalIp from 'internal-ip';
 import * as chalk from 'chalk';
 import * as _ from 'lodash';
@@ -245,9 +246,56 @@ class Server {
     }
   }
 
+  /**
+   * 检查端口占用情况
+   * @param { number } port: 检查的端口
+   */
+  portIsOccupied(port: number): Promise<boolean> {
+    return new Promise(function(resolve: Function, reject: Function): void {
+      const server: NetServer = net.createServer().listen(port);
+
+      server.on('listening', (): void => {
+        server.close();
+        resolve(true);
+      });
+      server.on('error', (err: Error): void => {
+        server.close();
+        resolve(false);
+      });
+    });
+  }
+
+  /**
+   * 判断端口是否被占用，并返回新的端口
+   * @param { number } port: 检查的端口
+   * @param { Array<number> } ignorePort: 忽略的端口
+   */
+  async detectPort(port: number, ignorePort: Array<number> = []): Promise<number> {
+    let maxPort: number = port + 10; // 最大端口
+    let newNumber: number = port,    // 使用的端口
+      pt: number = port;
+
+    if (maxPort > 65535) {
+      maxPort = 65535;
+    }
+
+    while (pt <= maxPort) {
+      const portCanUse: boolean = await this.portIsOccupied(pt);
+
+      if (portCanUse && !ignorePort.includes(pt)) {
+        newNumber = pt;
+        break;
+      } else {
+        pt++;
+      }
+    }
+
+    return newNumber;
+  }
+
   // 判断端口是否被占用，并使用新端口
   async getPort(): Promise<void> {
-    this.port = await detectPort(this.port);
+    this.port = await this.detectPort(this.port);
   }
 
   // socket
