@@ -19,7 +19,9 @@
     "gulpplugin",
     "gulp-memory-fs",
     "memory-fs",
-    "memfs"
+    "memfs",
+    "browser",
+    "koa"
   ],
   "scripts": {
     "start": "rimraf lib && tsc --watch",
