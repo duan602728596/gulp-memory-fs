@@ -12,6 +12,7 @@ class GulpMemoryFs {
   private mTime: Map<string, number>;
   private fs: MemoryFs | IFs;
   private https?: Https;
+  private dir: string;
   private reload: boolean;
   private server: Server;
 
@@ -31,13 +32,15 @@ class GulpMemoryFs {
     this.mTime = new Map<string, number>(); // 记录缓存时间
     this.fs = fsType === 'memory-fs' ? new MemoryFs() : createFsFromVolume(new Volume()); // 内存文件系统
     this.https = https;
+    this.dir = this.getDir(dir);
     this.reload = !!reload;
+
 
     // 服务
     this.server = new Server({
       fs: this.fs,
       port,
-      dir: this.getDir(dir),
+      dir: this.dir,
       https,
       reload,
       reloadTime,
@@ -72,11 +75,11 @@ class GulpMemoryFs {
 
   /**
    * 替换gulp.dest
-   * @param { string } output: 输出目录
+   * @param { string | undefined } output: 输出目录
    */
-  dest(output: string): Function {
+  dest(output?: string): Function {
     const _this: this = this;
-    const outputDir: string = this.getDir(output);
+    const outputDir: string = output ? this.getDir(output) : this.dir;
 
     return through2.obj(function(file: File, enc: string, callback: Function): any {
       // 错误判断
@@ -103,11 +106,11 @@ class GulpMemoryFs {
 
   /**
    * 监视文件
-   * @param { string } output: 输出目录
+   * @param { string | undefined } output: 输出目录
    */
-  changed(output: string): Function {
+  changed(output?: string): Function {
     const _this: this = this;
-    const outputDir: string = this.getDir(output);
+    const outputDir: string = output ? this.getDir(output) : this.dir;
 
     return through2.obj(function(file: File, enc: string, callback: Function): any {
       // 当前文件的修改时间
