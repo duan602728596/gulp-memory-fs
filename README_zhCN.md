@@ -16,8 +16,8 @@ const mfs = new GulpMemoryFs({
 
 function build() {
   return gulp.src(path.join(__dirname, 'src/**/*.js'))
-    .pipe(mfs.changed('dist'))
-    .pipe(mfs.dest('dist'));
+    .pipe(mfs.changed()) // or mfs.changed('dist')
+    .pipe(mfs.dest());   // or mfs.dest('dist')
 }
 
 async function server() {
