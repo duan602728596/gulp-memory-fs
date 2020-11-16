@@ -42,6 +42,7 @@ class Server {
   private socket: Set<socketIO.Socket>;
 
   private socketIOScript: Buffer;
+  private socketIOScriptMap: Buffer;
   private clientScript: string;
 
   constructor(args: ServerArgs) {
@@ -75,7 +76,7 @@ class Server {
     if (/^\/@@\/gulp-memory-fs/i.test(ctxPath)) {
       const result: ParsedPath = path.parse(ctxPath);
 
-      if (result.name === 'socket.io') {
+      if (result.base === 'socket.io.min.js') {
         ctx.type = 'application/javascript';
         ctx.status = 200;
         ctx.body = this.socketIOScript;
@@ -83,7 +84,15 @@ class Server {
         return true;
       }
 
-      if (result.name === 'client') {
+      if (result.base === 'socket.io.min.js.map') {
+        ctx.type = 'application/json';
+        ctx.status = 200;
+        ctx.body = this.socketIOScriptMap;
+
+        return true;
+      }
+
+      if (result.base === 'client.js') {
         const data: string = '(function() {\n'
           + `\n${ this.clientScript }\n\n`
           + 'client({\n'
@@ -222,7 +231,7 @@ class Server {
   // 注入脚本
   injectionScripts(html: string): string {
     const scripts: string = '\n\n<!-- gulp-memory-fs injection scripts start -->\n'
-      + '<script src="/@@/gulp-memory-fs/socket.io.js"></script>\n'
+      + '<script src="/@@/gulp-memory-fs/socket.io.min.js"></script>\n'
       + '<script src="/@@/gulp-memory-fs/client.js"></script>\n'
       + '<!-- gulp-memory-fs injection scripts end -->';
 
@@ -259,9 +268,11 @@ class Server {
   async getFile(): Promise<void> {
     // 查找脚本位置
     const socketIOPath: string = require.resolve('socket.io-client');
-    const socketIOPathFile: string = path.join(path.parse(socketIOPath).dir, '../dist/socket.io.js');
+    const socketIOPathFile: string = path.join(path.parse(socketIOPath).dir, '../dist/socket.io.min.js');
+    const socketIOScriptMap: string = path.join(path.parse(socketIOPath).dir, '../dist/socket.io.min.js.map');
 
     this.socketIOScript = await fs.promises.readFile(socketIOPathFile);
+    this.socketIOScriptMap = await fs.promises.readFile(socketIOScriptMap);
     this.clientScript = (await fs.promises.readFile(path.join(__dirname, 'client.js'))).toString();
   }
 
