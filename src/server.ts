@@ -203,7 +203,7 @@ class Server {
         ctx.body = content;
       } catch (err) {
         ctx.status = 500;
-        ctx.body = err.toString();
+        ctx.body = `<pre style="font-size: 14px">${ err.stack.toString() }</pre>`;
 
         console.error(err);
       }
