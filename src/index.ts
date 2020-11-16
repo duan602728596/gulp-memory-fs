@@ -35,7 +35,6 @@ class GulpMemoryFs {
     this.dir = this.getDir(dir);
     this.reload = !!reload;
 
-
     // 服务
     this.server = new Server({
       fs: this.fs,
