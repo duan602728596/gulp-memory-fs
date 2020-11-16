@@ -20,8 +20,12 @@
     "gulp-memory-fs",
     "memory-fs",
     "memfs",
+    "fs",
+    "memory",
     "browser",
-    "koa"
+    "koa",
+    "mock",
+    "proxy"
   ],
   "scripts": {
     "start": "rimraf lib && tsc --watch",
