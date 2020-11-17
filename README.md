@@ -52,6 +52,7 @@ Open the browser and type `http://127.0.0.1:7777/` to start development.
 | fsType     | 'memory-fs' &#124; 'memfs'     | Memory file system used                                                        | 'memfs'     |
 | mock       | { [key: string]: any &#124; ((ctx: Context, next: Function) => void &#124; Promise<void>); } | Configuring mock data | &nbsp; |
 | proxy      | { [key: string]: object; }     | Configuring the proxy                                                          | &nbsp;      |
+| mimeTypes  | { [key: string]: string; }     | Configure mimeTypes                                                            | &nbsp;      |
 
 ### GulpMemoryFs.prototype.changed & GulpMemoryFs.prototype.dest
 
@@ -99,6 +100,14 @@ const proxy = {
 ```
 
 Proxy configuration reference [http-proxy-middleware](https://github.com/chimurai/http-proxy-middleware).
+
+## MimeTypes
+
+```javascript
+const mimeTypes = {
+  avif: 'image/avif'
+};
+```
 
 ## Test
 

@@ -50,6 +50,7 @@ exports.default = gulp.series(
 | fsType     | 'memory-fs' &#124; 'memfs'     | 使用的内存文件系统                     | 'memfs'     |
 | mock       | { [key: string]: any &#124; ((ctx: Context, next: Function) => void &#124; Promise<void>); } | 配置mock数据 | &nbsp; |
 | proxy      | { [key: string]: object; }     | 配置代理                               | &nbsp;      |
+| mimeTypes  | { [key: string]: string; }     | 配置mimeTypes                          | &nbsp;      |
 
 ### GulpMemoryFs.prototype.changed & GulpMemoryFs.prototype.dest
 
@@ -97,6 +98,14 @@ const proxy = {
 ```
 
 proxy的配置参考[http-proxy-middleware](https://github.com/chimurai/http-proxy-middleware)。
+
+## MimeTypes
+
+```javascript
+const mimeTypes = {
+  avif: 'image/avif'
+};
+```
 
 ## Test
 
