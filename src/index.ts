@@ -25,7 +25,8 @@ class GulpMemoryFs {
       reloadTime,
       fsType,
       mock,
-      proxy
+      proxy,
+      mimeTypes
     }: GulpMemoryFsArgs = args;
 
     this.PLUGIN_NAME = 'gulp-memory-fs';    // 插件名
@@ -44,7 +45,8 @@ class GulpMemoryFs {
       reload,
       reloadTime,
       mock,
-      proxy
+      proxy,
+      mimeTypes
     });
   }
 

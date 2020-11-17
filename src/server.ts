@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import * as net from 'net';
 import type { Server as NetServer } from 'net';
 import * as Koa from 'koa';
-import type { Context } from 'koa';
+import type { Context, Middleware } from 'koa';
 import * as Router from '@koa/router';
 import connect = require('koa-connect');
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
@@ -23,18 +23,21 @@ import * as _ from 'lodash';
 import type { ServerArgs, Https, KoaFunc } from './types';
 
 class Server {
+  // 默认的mime类型
+  static defaultMimeMaps: { [key: string]: string } = {
+    avif: 'image/avif',
+    avifs: 'image/avif-sequence'
+  };
+
   private port: number;
   private dir: string;
   private fs: MemoryFs | IFs;
   private https?: Https;
   private reload: boolean;
   private reloadTime: number;
-  private mock?: {
-    [key: string]: any | KoaFunc;
-  };
-  private proxy?: {
-    [key: string]: Options;
-  };
+  private mock?: { [key: string]: any | KoaFunc };
+  private proxy?: { [key: string]: Options };
+  private mimeTypes?: { [key: string]: string };
 
   private app: Koa;
   private router: Router;
@@ -55,7 +58,8 @@ class Server {
       reload,     // 是否刷新
       reloadTime, // 刷新时间
       mock,       // mock数据
-      proxy
+      proxy,
+      mimeTypes
     }: ServerArgs = args;
 
     this.port = port ?? 7777;
@@ -66,6 +70,7 @@ class Server {
     this.reloadTime = reloadTime ?? 250;
     this.mock = mock;
     this.proxy = proxy;
+    this.mimeTypes = Object.assign({}, Server.defaultMimeMaps, mimeTypes);
 
     this.app = new Koa();
     this.router = new Router();
@@ -127,8 +132,25 @@ class Server {
     }
   }
 
+  // 重写mime types的中间件
+  createRewriteMime(): Middleware {
+    const _this: this = this;
+
+    return async function(ctx: Context, next: Function): Promise<void> {
+      await next();
+
+      const parseResult: ParsedPath = path.parse(ctx.url);
+      const ext: string = parseResult.ext.replace(/^\./, '');
+
+      if (ext in _this.mimeTypes!) {
+        ctx.type = _this.mimeTypes![ext];
+      }
+    };
+  }
+
   // 创建中间件
   createMiddleware(): void {
+    this.app.use(this.createRewriteMime());
     this.app.use(this.router.routes())
       .use(this.router.allowedMethods());
   }

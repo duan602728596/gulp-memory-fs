@@ -2,6 +2,7 @@ import type { Stats } from 'fs';
 import * as MemoryFs from 'memory-fs';
 import type { IFs } from 'memfs';
 import type { Context } from 'koa';
+import type { Options } from 'http-proxy-middleware';
 
 /* https证书配置项 */
 export interface Https {
@@ -20,12 +21,9 @@ export interface GulpMemoryFsArgs {
   reload?: boolean;
   reloadTime?: number;
   fsType?: 'memory-fs' | 'memfs';
-  mock?: {
-    [key: string]: any | KoaFunc;
-  };
-  proxy?: {
-    [key: string]: object;
-  };
+  mock?: { [key: string]: any | KoaFunc };
+  proxy?: { [key: string]: Options };
+  mimeTypes?: { [key: string]: string };
 }
 
 /* 文件的参数 */
