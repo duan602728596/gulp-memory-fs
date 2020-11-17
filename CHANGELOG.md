@@ -1,3 +1,7 @@
+### v1.1.0
+
+* Add mimeTypes configuration.
+
 ### v1.0.0
 
 * Upgrade all dependencies to the latest version.
