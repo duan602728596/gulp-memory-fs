@@ -27,6 +27,6 @@ gulpfile.js
 babel.config.js
 tsconfig.json
 *.gif
-
+.husky
 *.key
 *.crt
