@@ -3,7 +3,7 @@ import type { Stats } from 'fs';
 import { createFsFromVolume, Volume, IFs } from 'memfs';
 import * as through2 from 'through2';
 import * as PluginError from 'plugin-error';
-import Server from './server';
+import Server from './Server';
 import type { GulpMemoryFsArgs, File, OutPath, Https } from './types';
 
 class GulpMemoryFs {
