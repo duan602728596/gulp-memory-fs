@@ -1,4 +1,4 @@
-const GulpMemoryFs = require('./lib/index').default;
+import GulpMemoryFs from './GulpMemoryFs';
 
 module.exports = GulpMemoryFs;
 module.exports.default = GulpMemoryFs;
