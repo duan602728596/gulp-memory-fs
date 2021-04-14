@@ -2,7 +2,9 @@
 
 ![](demonstrate.gif)
 
-`gulp-memory-fs`可以让开发者在使用gulp构建时也可以使用内存文件系统（[memory-fs](https://github.com/webpack/memory-fs)或[memfs](https://github.com/streamich/memfs)）。
+`gulp-memory-fs`可以让开发者在使用gulp构建时也可以使用内存文件系统（ [memfs](https://github.com/streamich/memfs) ）。   
+
+> [memory-fs](https://github.com/webpack/memory-fs) 已弃用。
 
 ## 开始使用
 
@@ -47,7 +49,6 @@ exports.default = gulp.series(
 | https      | { key: string; cert: string; } | 配置https证书的文件地址，服务启用https | &nbsp;      |
 | reload     | boolean                        | 文件保存时，浏览器是否刷新             | false       |
 | reloadTime | number                         | 文件修改后，浏览器的延迟刷新时间       | 250         |
-| fsType     | 'memory-fs' &#124; 'memfs'     | 使用的内存文件系统                     | 'memfs'     |
 | mock       | { [key: string]: any &#124; ((ctx: Context, next: Function) => void &#124; Promise<void>); } | 配置mock数据 | &nbsp; |
 | proxy      | { [key: string]: object; }     | 配置代理                               | &nbsp;      |
 | mimeTypes  | { [key: string]: string; }     | 配置mimeTypes                          | &nbsp;      |

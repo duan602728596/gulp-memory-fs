@@ -4,7 +4,9 @@
 
 ![](demonstrate.gif)
 
-`gulp-memory-fs` allows developers to use the memory file system ( [memory-fs](https://github.com/webpack/memory-fs) or [memfs](https://github.com/streamich/memfs) ) when building with gulp。
+`gulp-memory-fs` allows developers to use the memory file system ( [memfs](https://github.com/streamich/memfs) ) when building with gulp。   
+
+> [memory-fs](https://github.com/webpack/memory-fs) is deprecated.
 
 ## Start Using
 
@@ -49,7 +51,6 @@ Open the browser and type `http://127.0.0.1:7777/` to start development.
 | https      | { key: string; cert: string; } | Configure the file address of the https certificate, service enables https.    | &nbsp;      |
 | reload     | boolean                        | Whether the browser refreshes when the file is saved                           | false       |
 | reloadTime | number                         | Delayed refresh time of the browser after the file is modified                 | 250         |
-| fsType     | 'memory-fs' &#124; 'memfs'     | Memory file system used                                                        | 'memfs'     |
 | mock       | { [key: string]: any &#124; ((ctx: Context, next: Function) => void &#124; Promise<void>); } | Configuring mock data | &nbsp; |
 | proxy      | { [key: string]: object; }     | Configuring the proxy                                                          | &nbsp;      |
 | mimeTypes  | { [key: string]: string; }     | Configure mimeTypes                                                            | &nbsp;      |
