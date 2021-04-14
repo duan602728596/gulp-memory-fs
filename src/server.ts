@@ -24,7 +24,6 @@ import type { ServerArgs, Https, KoaFunc } from './types';
 class Server {
   // 默认的mime类型
   static defaultMimeMaps: { [key: string]: string } = {
-    avif: 'image/avif',
     avifs: 'image/avif-sequence'
   };
 
@@ -138,11 +137,13 @@ class Server {
     return async function(ctx: Context, next: Function): Promise<void> {
       await next();
 
-      const parseResult: ParsedPath = path.parse(ctx.url);
-      const ext: string = parseResult.ext.replace(/^\./, '');
+      if (!(ctx.type && ctx.type !== '')) {
+        const parseResult: ParsedPath = path.parse(ctx.url);
+        const ext: string = parseResult.ext.replace(/^\./, '');
 
-      if (ext in _this.mimeTypes!) {
-        ctx.type = _this.mimeTypes![ext];
+        if (mime[ext] && mime[ext] !== '') {
+          ctx.type = mime[ext];
+        }
       }
     };
   }
