@@ -14,7 +14,6 @@ import * as Router from '@koa/router';
 import connect = require('koa-connect');
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
 import * as mime from 'mime-types';
-import * as MemoryFs from 'memory-fs';
 import type { IFs } from 'memfs';
 import * as socketIO from 'socket.io';
 import * as internalIp from 'internal-ip';
@@ -31,7 +30,7 @@ class Server {
 
   private port: number;
   private dir: string;
-  private fs: MemoryFs | IFs;
+  private fs: IFs;
   private https?: Https;
   private reload: boolean;
   private reloadTime: number;
