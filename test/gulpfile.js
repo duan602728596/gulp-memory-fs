@@ -1,6 +1,6 @@
 const gulp = require('gulp');
 const path = require('path');
-const GulpMemoryFs = require('../cjs');
+const GulpMemoryFs = require('../lib/cjs');
 
 const mock = {
   'GET /mock/0': [0, 1, 2, 3],
@@ -23,7 +23,6 @@ const proxy = {
 const gulpMemoryFs = new GulpMemoryFs({
   dir: 'dist',
   reload: true,
-  fsType: 'memfs',
   /*
   // https配置
   https: {
