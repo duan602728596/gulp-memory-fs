@@ -35,6 +35,10 @@ module.exports = {
       }
     }
   },
+  globals: {
+    NodeJS: 'readonly',
+    SocketIOClient: 'readonly'
+  },
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
@@ -241,10 +245,7 @@ module.exports = {
     // import
     'import/no-unresolved': [ // 确保导入的模块可以解析为本地文件系统上的模块
       'error',
-      {
-        commonjs: true,
-        ignore: ['^(worker|raw)-loader!', '^@@', '^UE$', '^react-img-editor$', 'describe', 'it']
-      }
+      { commonjs: true }
     ]
   }
 };

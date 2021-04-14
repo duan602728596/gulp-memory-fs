@@ -1,3 +1,7 @@
+import type * as Io from 'socket.io-client';
+
+declare const io: typeof Io;
+
 interface ClientArgs {
   reloadTime: number;
 }
