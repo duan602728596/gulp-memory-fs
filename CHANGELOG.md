@@ -1,3 +1,8 @@
+### v2.0.0
+
+* The upgrade depends on the latest version.
+* Remove `memory-fs`, remove `fsType` configuration.
+
 ### v1.1.0
 
 * Add mimeTypes configuration.
