@@ -1,5 +1,6 @@
-import type { Stats } from 'fs';
+import type { Stats, PathLike } from 'fs';
 import type { IFs } from 'memfs';
+import type { TCallback, TMode } from 'memfs/lib/volume';
 import type { Context } from 'koa';
 import type { Options } from 'http-proxy-middleware';
 
@@ -42,3 +43,6 @@ export interface OutPath {
 export interface ServerArgs extends GulpMemoryFsArgs {
   fs: IFs;
 }
+
+/* mkdirp */
+export type VolumeMkdirp = (path: PathLike, mode?: TMode) => any;

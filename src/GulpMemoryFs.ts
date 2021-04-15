@@ -1,10 +1,11 @@
+import * as util from 'util';
 import * as path from 'path';
 import type { Stats } from 'fs';
 import { createFsFromVolume, Volume, IFs } from 'memfs';
 import * as through2 from 'through2';
 import * as PluginError from 'plugin-error';
 import Server from './Server';
-import type { GulpMemoryFsArgs, File, OutPath, Https } from './types';
+import type { GulpMemoryFsArgs, File, OutPath, Https, VolumeMkdirp } from './types';
 
 class GulpMemoryFs {
   static PLUGIN_NAME: string = 'gulp-memory-fs';
@@ -15,6 +16,7 @@ class GulpMemoryFs {
   private https?: Https;
   private dir: string;
   private reload: boolean;
+  private mkdirp: VolumeMkdirp;
   private server: Server;
 
   constructor(args: GulpMemoryFsArgs) {
@@ -35,6 +37,7 @@ class GulpMemoryFs {
     this.https = https;                          // https证书配置项
     this.dir = this.getDir(dir);                 // 转换文件路径
     this.reload = !!reload;                      // 修改后是否刷新页面
+    this.mkdirp = util.promisify(this.fs.mkdirp);
 
     // 服务
     this.server = new Server({
@@ -82,7 +85,7 @@ class GulpMemoryFs {
     const _this: this = this;
     const outputDir: string = output ? this.getDir(output) : this.dir;
 
-    return through2.obj(function(file: File, enc: string, callback: Function): any {
+    return through2.obj(async function(file: File, enc: string, callback: Function): Promise<any> {
       // 错误判断
       if (file.isStream()) {
         this.emit('error', new PluginError(GulpMemoryFs.PLUGIN_NAME, 'Streams are not supported!'));
@@ -94,8 +97,8 @@ class GulpMemoryFs {
       const formatOutput: OutPath = _this.formatOutPath(outputDir, file.relative);
 
       // 写入文件
-      _this.fs.mkdirpSync(formatOutput.dir);
-      _this.fs.writeFileSync(formatOutput.file, contents);
+      await _this.mkdirp(formatOutput.dir);
+      await _this.fs.promises.writeFile(formatOutput.file, contents);
       _this.mTime.set(formatOutput.file, new Date().getTime());
 
       // reload
