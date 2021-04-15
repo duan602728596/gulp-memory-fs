@@ -23,7 +23,9 @@ function createSocketReloadFunc(reloadTime: number): Function {
 
 /* client scripts */
 function client({ reloadTime }: ClientArgs): void {
-  const socket: SocketIOClient.Socket = io('/');
+  const socket: SocketIOClient.Socket = io({
+    path: '/@@/gulp-memory-fs/ws'
+  });
 
   socket.on('RELOAD', createSocketReloadFunc(reloadTime));
 }
