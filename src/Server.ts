@@ -345,7 +345,7 @@ class Server {
 
     this.socketIOScript = await fs.promises.readFile(socketIOPathFile);
     this.socketIOScriptMap = await fs.promises.readFile(socketIOScriptMap);
-    this.clientScript = (await fs.promises.readFile(path.join(__dirname, 'client.js'))).toString();
+    this.clientScript = await fs.promises.readFile(path.join(__dirname, 'client.js'), { encoding: 'utf8' });
   }
 
   // 输出本机IP信息
