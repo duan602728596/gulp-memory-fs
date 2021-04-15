@@ -343,9 +343,12 @@ class Server {
     const socketIOPathFile: string = path.join(path.parse(socketIOPath).dir, '../dist/socket.io.min.js');
     const socketIOScriptMap: string = path.join(path.parse(socketIOPath).dir, '../dist/socket.io.min.js.map');
 
-    this.socketIOScript = await fs.promises.readFile(socketIOPathFile);
-    this.socketIOScriptMap = await fs.promises.readFile(socketIOScriptMap);
-    this.clientScript = await fs.promises.readFile(path.join(__dirname, 'client.js'), { encoding: 'utf8' });
+    // eslint-disable-next-line @typescript-eslint/typedef
+    [this.socketIOScript, this.socketIOScriptMap, this.clientScript] = await Promise.all([
+      fs.promises.readFile(socketIOPathFile),
+      fs.promises.readFile(socketIOScriptMap),
+      fs.promises.readFile(path.join(__dirname, 'client.js'), { encoding: 'utf8' })
+    ]);
   }
 
   // 输出本机IP信息
