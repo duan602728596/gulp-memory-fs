@@ -1,6 +1,5 @@
-import type * as Io from 'socket.io-client';
-
-declare const io: typeof Io;
+// eslint-disable-next-line spaced-comment
+/// <reference types="socket.io-client" />
 
 interface ClientArgs {
   reloadTime: number;

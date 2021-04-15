@@ -37,7 +37,8 @@ module.exports = {
   },
   globals: {
     NodeJS: 'readonly',
-    SocketIOClient: 'readonly'
+    SocketIOClient: 'readonly',
+    io: 'readonly'
   },
   overrides: [
     {
