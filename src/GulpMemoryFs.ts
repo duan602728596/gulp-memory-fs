@@ -7,6 +7,8 @@ import Server from './Server';
 import type { GulpMemoryFsArgs, File, OutPath, Https } from './types';
 
 class GulpMemoryFs {
+  static PLUGIN_NAME: string = 'gulp-memory-fs';
+
   private PLUGIN_NAME: string;
   private mTime: Map<string, number>;
   private fs: IFs;
@@ -27,12 +29,12 @@ class GulpMemoryFs {
       mimeTypes
     }: GulpMemoryFsArgs = args;
 
-    this.PLUGIN_NAME = 'gulp-memory-fs';        // 插件名
-    this.mTime = new Map<string, number>();     // 记录缓存时间
-    this.fs = createFsFromVolume(new Volume()); // 内存文件系统
-    this.https = https;
-    this.dir = this.getDir(dir);
-    this.reload = !!reload;
+    this.PLUGIN_NAME = GulpMemoryFs.PLUGIN_NAME; // 插件名
+    this.mTime = new Map<string, number>();      // 记录缓存时间
+    this.fs = createFsFromVolume(new Volume());  // 内存文件系统
+    this.https = https;                          // https证书配置项
+    this.dir = this.getDir(dir);                 // 转换文件路径
+    this.reload = !!reload;                      // 修改后是否刷新页面
 
     // 服务
     this.server = new Server({
@@ -83,7 +85,7 @@ class GulpMemoryFs {
     return through2.obj(function(file: File, enc: string, callback: Function): any {
       // 错误判断
       if (file.isStream()) {
-        this.emit('error', new PluginError(_this.PLUGIN_NAME, 'Streams are not supported!'));
+        this.emit('error', new PluginError(GulpMemoryFs.PLUGIN_NAME, 'Streams are not supported!'));
 
         return callback();
       }
