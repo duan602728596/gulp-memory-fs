@@ -51,7 +51,7 @@ class Server {
     const {
       port,       // 服务监听的端口号
       dir,        // 服务的文件目录
-      fs,         // 内存文件系统
+      fs: ifs,    // 内存文件系统
       https,      // http2
       reload,     // 是否刷新
       reloadTime, // 刷新时间
@@ -62,7 +62,7 @@ class Server {
 
     this.port = port ?? 7777;
     this.dir = dir;
-    this.fs = fs;
+    this.fs = ifs;
     this.https = https;
     this.reload = !!reload;
     this.reloadTime = reloadTime ?? 250;
