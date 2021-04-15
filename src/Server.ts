@@ -235,8 +235,10 @@ class Server {
   // 创建服务
   async createServer(): Promise<void> {
     if (this.https) {
-      const keyFile: Buffer = await fs.promises.readFile(this.https.key);
-      const certFile: Buffer = await fs.promises.readFile(this.https.cert);
+      const [keyFile, certFile]: [Buffer, Buffer] = await Promise.all([
+        fs.promises.readFile(this.https.key),
+        fs.promises.readFile(this.https.cert)
+      ]);
       const httpsConfig: SecureServerOptions = {
         allowHTTP1: true,
         key: keyFile,
