@@ -10,14 +10,14 @@ import type { GulpMemoryFsArgs, File, OutPath, Https, VolumeMkdirp } from './typ
 class GulpMemoryFs {
   static PLUGIN_NAME: string = 'gulp-memory-fs';
 
-  private PLUGIN_NAME: string;
-  private mTime: Map<string, number>;
-  private fs: IFs;
-  private https?: Https;
-  private dir: string;
-  private reload: boolean;
-  private mkdirp: VolumeMkdirp;
-  private server: Server;
+  public PLUGIN_NAME: string;
+  public mTime: Map<string, number>;
+  public fs: IFs;
+  public https?: Https;
+  public dir: string;
+  public reload: boolean;
+  public mkdirp: VolumeMkdirp;
+  public server: Server;
 
   constructor(args: GulpMemoryFsArgs) {
     const {

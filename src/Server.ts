@@ -27,25 +27,25 @@ class Server {
     avifs: 'image/avif-sequence'
   };
 
-  private port: number;
-  private dir: string;
-  private fs: IFs;
-  private https?: Https;
-  private reload: boolean;
-  private reloadTime: number;
-  private mock?: { [key: string]: any | KoaFunc };
-  private proxy?: { [key: string]: Options };
-  private mimeTypes?: { [key: string]: string };
+  public port: number;
+  public dir: string;
+  public fs: IFs;
+  public https?: Https;
+  public reload: boolean;
+  public reloadTime: number;
+  public mock?: { [key: string]: any | KoaFunc };
+  public proxy?: { [key: string]: Options };
+  public mimeTypes?: { [key: string]: string };
 
-  private app: Koa;
-  private router: Router;
+  public app: Koa;
+  public router: Router;
 
-  private server: Http1Server | Http2SecureServer;
-  private socket: Set<socketIO.Socket>;
+  public server: Http1Server | Http2SecureServer;
+  public socket: Set<socketIO.Socket>;
 
-  private socketIOScript: Buffer;
-  private socketIOScriptMap: Buffer;
-  private clientScript: string;
+  public socketIOScript: Buffer;
+  public socketIOScriptMap: Buffer;
+  public clientScript: string;
 
   constructor(args: ServerArgs) {
     const {
