@@ -24,7 +24,8 @@ function createSocketReloadFunc(reloadTime: number): HandleSocketReload {
 
 /* client scripts */
 function client({ reloadTime }: ClientArgs): void {
-  const socket: WebSocket = new WebSocket(`ws://${ location.host }/@@/gulp-memory-fs/ws`);
+  const socket: WebSocket = new WebSocket(
+    `ws${ location.protocol === 'https:' ? 's' : '' }://${ location.host }/@@/gulp-memory-fs/ws`);
 
   socket.addEventListener('message', createSocketReloadFunc(reloadTime), false);
 }
