@@ -33,6 +33,7 @@ gulpfile.cjs
 .eslintrc.cjs
 babel.config.js
 tsconfig.json
+.yarnrc.yml
 *.gif
 .husky
 *.key
