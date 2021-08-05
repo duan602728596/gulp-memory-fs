@@ -1,14 +1,15 @@
-// eslint-disable-next-line spaced-comment
-/// <reference types="socket.io-client" />
-
 interface ClientArgs {
   reloadTime: number;
 }
 
+interface HandleSocketReload {
+  (event: MessageEvent): void;
+}
+
 let timer: number | undefined = undefined;
 
-function createSocketReloadFunc(reloadTime: number): Function {
-  return function handleSocketReload(data: any): void {
+function createSocketReloadFunc(reloadTime: number): HandleSocketReload {
+  return function handleSocketReload(event: MessageEvent): void {
     if (typeof timer !== 'undefined') {
       clearTimeout(timer);
     }
@@ -23,9 +24,7 @@ function createSocketReloadFunc(reloadTime: number): Function {
 
 /* client scripts */
 function client({ reloadTime }: ClientArgs): void {
-  const socket: SocketIOClient.Socket = io({
-    path: '/@@/gulp-memory-fs/ws'
-  });
+  const socket: WebSocket = new WebSocket(`ws://${ location.host }/@@/gulp-memory-fs/ws`);
 
-  socket.on('RELOAD', createSocketReloadFunc(reloadTime));
+  socket.addEventListener('message', createSocketReloadFunc(reloadTime), false);
 }

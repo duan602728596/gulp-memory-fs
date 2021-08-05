@@ -2,12 +2,12 @@ import './alias';
 import * as path from 'path';
 import type { ParsedPath } from 'path';
 import * as http from 'http';
-import type { Server as Http1Server } from 'http';
+import type { Server as Http1Server, IncomingMessage } from 'http';
 import * as http2 from 'http2';
 import type { SecureServerOptions, Http2SecureServer } from 'http2';
 import * as fs from 'fs';
 import * as net from 'net';
-import type { Server as NetServer } from 'net';
+import type { Server as NetServer, Socket } from 'net';
 import * as Koa from 'koa';
 import type { Context, Middleware } from 'koa';
 import * as Router from '@koa/router';
@@ -15,11 +15,13 @@ import connect = require('koa-connect');
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
 import * as mime from 'mime-types';
 import type { IFs } from 'memfs';
-import * as socketIO from 'socket.io';
+import WebSocket, { Server as WebSocketServer } from 'ws';
 import * as internalIp from 'internal-ip';
 import * as chalk from 'chalk';
 import * as _ from 'lodash';
 import type { ServerArgs, Https, KoaFunc } from './types';
+
+const noop: Function = (): void => { /* noop */ };
 
 class Server {
   // 默认的mime类型
@@ -41,10 +43,8 @@ class Server {
   public router: Router;
 
   public server: Http1Server | Http2SecureServer;
-  public socket: Set<socketIO.Socket>;
+  public wsServer: WebSocketServer;
 
-  public socketIOScript: Buffer;
-  public socketIOScriptMap: Buffer;
   public clientScript: string;
 
   constructor(args: ServerArgs) {
@@ -72,7 +72,6 @@ class Server {
 
     this.app = new Koa();
     this.router = new Router();
-    this.socket = new Set();
   }
 
   // gulp-memory-fs注入的文件解析
@@ -80,29 +79,13 @@ class Server {
     if (/^\/@@\/gulp-memory-fs/i.test(ctxPath)) {
       const result: ParsedPath = path.parse(ctxPath);
 
-      if (result.base === 'socket.io.min.js') {
-        ctx.type = 'application/javascript';
-        ctx.status = 200;
-        ctx.body = this.socketIOScript;
-
-        return true;
-      }
-
-      if (result.base === 'socket.io.min.js.map') {
-        ctx.type = 'application/json';
-        ctx.status = 200;
-        ctx.body = this.socketIOScriptMap;
-
-        return true;
-      }
-
       if (result.base === 'client.js') {
-        const data: string = '(function() {\n'
-          + `\n${ this.clientScript }\n\n`
-          + 'client({\n'
-          + `  reloadTime: ${ this.reloadTime }\n`
-          + '});\n\n'
-          + '})();';
+        const data: string = `(function() {
+${ this.clientScript }\n
+  client({
+    reloadTime: ${ this.reloadTime }
+  });
+})();`;
 
         ctx.type = 'application/javascript';
         ctx.status = 200;
@@ -256,7 +239,6 @@ class Server {
   // 注入脚本
   injectionScripts(html: string): string {
     const scripts: string = '\n\n<!-- gulp-memory-fs injection scripts start -->\n'
-      + '<script src="/@@/gulp-memory-fs/socket.io.min.js"></script>\n'
       + '<script src="/@@/gulp-memory-fs/client.js"></script>\n'
       + '<!-- gulp-memory-fs injection scripts end -->';
 
@@ -265,8 +247,10 @@ class Server {
 
   // reload
   reloadFunc(): void {
-    for (const socket of this.socket) {
-      socket.emit('RELOAD');
+    if (this.wsServer) {
+      this.wsServer.clients.forEach((ws: WebSocket): void => {
+        ws.send('RELOAD');
+      });
     }
   }
 
@@ -324,33 +308,36 @@ class Server {
 
   // socket
   createSocket(): void {
-    const _this: this = this;
-    const io: socketIO.Server = new socketIO.Server(this.server as Http1Server, {
+    this.wsServer = new WebSocketServer({
+      noServer: true,
       path: '/@@/gulp-memory-fs/ws'
     });
 
-    io.on('connection', function(socket: socketIO.Socket): void {
-      socket.on('disconnect', function(): void {
-        _this.socket.delete(socket);
-      });
+    this.server.on('upgrade', (req: IncomingMessage, sock: Socket, head: Buffer): void => {
+      if (!this.wsServer.shouldHandle(req)) {
+        return;
+      }
 
-      _this.socket.add(socket);
+      this.wsServer.handleUpgrade(req, sock, head, (connection: WebSocket): void => {
+        this.wsServer.emit('connection', connection, req);
+      });
     });
+
+    setInterval((): void => {
+      this.wsServer.clients.forEach((socket: WebSocket): void => {
+        if (socket.isAlive === false) {
+          return socket.terminate();
+        }
+
+        socket.isAlive = false;
+        socket.ping(noop);
+      });
+    }, 30_000);
   }
 
   // file
   async getFile(): Promise<void> {
-    // 查找脚本位置
-    const socketIOPath: string = require.resolve('socket.io-client');
-    const socketIOPathFile: string = path.join(path.parse(socketIOPath).dir, '../dist/socket.io.min.js');
-    const socketIOScriptMap: string = path.join(path.parse(socketIOPath).dir, '../dist/socket.io.min.js.map');
-
-    // eslint-disable-next-line @typescript-eslint/typedef
-    [this.socketIOScript, this.socketIOScriptMap, this.clientScript] = await Promise.all([
-      fs.promises.readFile(socketIOPathFile),
-      fs.promises.readFile(socketIOScriptMap),
-      fs.promises.readFile(path.join(__dirname, 'client.js'), { encoding: 'utf8' })
-    ]);
+    this.clientScript = await fs.promises.readFile(path.join(__dirname, 'client.js'), { encoding: 'utf8' });
   }
 
   // 输出本机IP信息
