@@ -7,9 +7,13 @@ pnpm-lock.yaml
 # yarn
 yarn.lock
 yarn-error.log
+.yarnrc
+.yarn/*
+!.yarn/releases
 
 # webstorm
 .idea
+.DS_Store
 
 # ignore
 .eslintignore
@@ -21,9 +25,12 @@ src
 tests
 test
 gulpfile.js
+gulpfile.mjs
+gulpfile.cjs
 .editorconfig
 .eslintrc.yml
 .eslintrc.js
+.eslintrc.cjs
 babel.config.js
 tsconfig.json
 *.gif
