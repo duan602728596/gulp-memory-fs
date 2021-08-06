@@ -17,6 +17,7 @@ yarn-error.log
 
 # project
 lib
+esm
 example/dist
 *.crt
 *.key
