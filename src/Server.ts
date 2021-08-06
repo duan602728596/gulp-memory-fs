@@ -249,7 +249,9 @@ ${ this.clientScript }\n
   reloadFunc(): void {
     if (this.wsServer) {
       this.wsServer.clients.forEach((ws: WebSocket): void => {
-        ws.send('RELOAD');
+        ws.send(JSON.stringify({
+          type: 'reload'
+        }));
       });
     }
   }
