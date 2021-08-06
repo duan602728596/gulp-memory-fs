@@ -8,6 +8,8 @@
     "newLine": "LF",
     "resolveJsonModule": true,
     "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "rootDir": "./src",
     "outDir": "./lib"
   },

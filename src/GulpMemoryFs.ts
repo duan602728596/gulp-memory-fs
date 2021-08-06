@@ -2,8 +2,8 @@ import * as util from 'util';
 import * as path from 'path';
 import type { Stats } from 'fs';
 import { createFsFromVolume, Volume, IFs } from 'memfs';
-import * as through2 from 'through2';
-import * as PluginError from 'plugin-error';
+import through2 from 'through2';
+import PluginError from 'plugin-error';
 import Server from './Server';
 import type { GulpMemoryFsArgs, File, OutPath, Https, VolumeMkdirp } from './types';
 

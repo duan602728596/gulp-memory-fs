@@ -1,6 +1,6 @@
 import type { Stats, PathLike } from 'fs';
 import type { IFs } from 'memfs';
-import type { TCallback, TMode } from 'memfs/lib/volume';
+import type { TMode } from 'memfs/lib/volume';
 import type { Context } from 'koa';
 import type { Options } from 'http-proxy-middleware';
 
