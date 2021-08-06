@@ -15,9 +15,10 @@ import connect from 'koa-connect';
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
 import mime from 'mime-types';
 import type { IFs } from 'memfs';
-import WebSocket, { Server as WebSocketServer } from 'ws';
+import WebSocket from 'ws';
 import internalIp from 'internal-ip';
 import chalk from 'chalk';
+import { WebSocketServer } from './ws';
 import type { ServerArgs, Https, KoaFunc } from './types';
 
 const noop: Function = (): void => { /* noop */ };
