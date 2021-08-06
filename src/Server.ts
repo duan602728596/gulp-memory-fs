@@ -18,7 +18,6 @@ import type { IFs } from 'memfs';
 import WebSocket, { Server as WebSocketServer } from 'ws';
 import internalIp from 'internal-ip';
 import chalk from 'chalk';
-import _ from 'lodash';
 import type { ServerArgs, Https, KoaFunc } from './types';
 
 const noop: Function = (): void => { /* noop */ };
@@ -144,7 +143,7 @@ ${ this.clientScript }\n
 
     for (const key in this.mock) {
       // 拆分，解析方法
-      const formatData: string[] = _.without(key.split(/\s+/), '');
+      const formatData: string[] = key.split(/\s+/).filter((o: string): boolean => o !== '');
       let method: string = 'get';
       let uri: string = '';
 
