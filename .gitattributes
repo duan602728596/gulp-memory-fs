@@ -1,1 +1,2 @@
-.yarn/** linguist-detectable=false
+.yarn/**/*.*  linguist-detectable=false
+.eslintrc.cjs linguist-detectable=false
