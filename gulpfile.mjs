@@ -1,5 +1,4 @@
 import util from 'util';
-import path from 'path';
 import fs from 'fs';
 import glob from 'glob';
 import gulp from 'gulp';
@@ -86,7 +85,7 @@ async function addJsExt() {
 /* 写入package.js文件 */
 async function writeTypeModulePackageJsonFile() {
   await fs.promises.writeFile(
-    path.join('esm/package.json'),
+    'esm/package.json',
     JSON.stringify({ type: 'module' }, null, 2) + '\n'
   );
 }
