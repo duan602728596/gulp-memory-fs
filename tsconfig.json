@@ -3,7 +3,7 @@
     "alwaysStrict": true,
     "moduleResolution": "node",
     "locale": "zh-CN",
-    "module": "commonjs",
+    "module": "ESNext",
     "target": "ES2018",
     "newLine": "LF",
     "resolveJsonModule": true,

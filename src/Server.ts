@@ -18,7 +18,7 @@ import type { IFs } from 'memfs';
 import WebSocket from 'ws';
 import internalIp from 'internal-ip';
 import chalk from 'chalk';
-import { WebSocketServer } from './ws';
+import { WebSocketServer, dirname } from './utils';
 import type { ServerArgs, Https, KoaFunc } from './types';
 
 const noop: Function = (): void => { /* noop */ };
@@ -339,7 +339,7 @@ ${ this.clientScript }\n
 
   // file
   async getFile(): Promise<void> {
-    this.clientScript = await fs.promises.readFile(path.join(__dirname, 'client.js'), { encoding: 'utf8' });
+    this.clientScript = await fs.promises.readFile(path.join(dirname, 'client.js'), { encoding: 'utf8' });
   }
 
   // 输出本机IP信息
