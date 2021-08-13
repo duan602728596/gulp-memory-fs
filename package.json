@@ -48,7 +48,7 @@
   "scripts": {
     "start": "rimraf lib && tsc --watch",
     "build": "rimraf lib && rimraf esm && NODE_OPTIONS=\"--experimental-json-modules\" gulp",
-    "example": "gulp --gulpfile test/gulpfile.js",
+    "example": "gulp --gulpfile test/gulpfile.mjs",
     "test": "mocha ./test/test.js --timeout 180000",
     "eslint": "eslint ./ --ext .js,.jsx,.ts,.tsx --fix"
   },
@@ -70,6 +70,7 @@
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/eslint-parser": "^7.15.0",
+    "@sweet-milktea/utils": "^3.0.2",
     "@types/koa": "^2",
     "@types/node": "^16",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
