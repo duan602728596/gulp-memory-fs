@@ -1,3 +1,8 @@
+### v3.0.0
+
+* Replace `socket.io` with `ws`.
+* Support ESModule.
+
 ### v2.0.0
 
 * The upgrade depends on the latest version.
