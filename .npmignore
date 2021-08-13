@@ -7,8 +7,9 @@ pnpm-lock.yaml
 # yarn
 yarn.lock
 yarn-error.log
-.yarnrc
-.yarn
+.yarn/*
+.pnp.cjs
+.yarnrc.yml
 
 # webstorm
 .idea
