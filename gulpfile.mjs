@@ -11,13 +11,13 @@ const globPromise = util.promisify(glob);
 
 const tsOptions = {
   ...tsconfig.compilerOptions,
+  module: 'commonjs',
   skipLibCheck: true
 };
 
 const tsESMOptions = {
   ...tsconfig.compilerOptions,
-  skipLibCheck: true,
-  module: 'ESNext'
+  skipLibCheck: true
 };
 
 function serverBuild() {
