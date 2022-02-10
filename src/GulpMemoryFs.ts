@@ -1,7 +1,7 @@
 import * as util from 'util';
 import * as path from 'path';
 import type { Stats } from 'fs';
-import { createFsFromVolume, Volume, IFs } from 'memfs';
+import { createFsFromVolume, Volume, type IFs } from 'memfs';
 import through2 from 'through2';
 import PluginError from 'plugin-error';
 import Server from './Server';

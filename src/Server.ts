@@ -12,7 +12,7 @@ import Koa from 'koa';
 import type { Context, Middleware } from 'koa';
 import Router from '@koa/router';
 import connect from 'koa-connect';
-import { createProxyMiddleware, Options } from 'http-proxy-middleware';
+import { createProxyMiddleware, type Options as ProxyMiddlewareOptions } from 'http-proxy-middleware';
 import mime from 'mime-types';
 import type { IFs } from 'memfs';
 import WebSocket from 'ws';
@@ -39,7 +39,7 @@ class Server {
   public reload: boolean;
   public reloadTime: number;
   public mock?: { [key: string]: any | KoaFunc };
-  public proxy?: { [key: string]: Options };
+  public proxy?: { [key: string]: ProxyMiddlewareOptions };
   public mimeTypes?: { [key: string]: string };
 
   public app: Koa;
