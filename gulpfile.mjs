@@ -2,53 +2,91 @@ import util from 'util';
 import fs from 'fs';
 import glob from 'glob';
 import gulp from 'gulp';
-import typescript from 'gulp-typescript';
+import gulpTypescript from 'gulp-typescript';
+import { ProjectCompiler as GulpTypescriptProjectCompiler } from 'gulp-typescript/release/compiler.js';
+import gulpTypescriptUtils from 'gulp-typescript/release/utils.js';
 import terser from 'gulp-terser';
 import rename from 'gulp-rename';
+import typescript from 'typescript';
 import tsconfig from './tsconfig.json';
 
 const globPromise = util.promisify(glob);
 
+/**
+ * fix: 重写 ProjectCompiler 的 attachContentToFile 方法
+ *      用于支持mts和cts文件的编译
+ */
+GulpTypescriptProjectCompiler.prototype.attachContentToFile = function(file, fileName, content) {
+  const [, extension] = gulpTypescriptUtils.splitExtension(fileName, ['d.ts', 'd.ts.map']);
+
+  switch (extension) {
+    case 'js':
+    case 'jsx':
+    case 'mjs':
+    case 'cjs':
+      file.jsFileName = fileName;
+      file.jsContent = content;
+      break;
+
+    case 'd.ts.map':
+      file.dtsMapFileName = fileName;
+      file.dtsMapContent = content;
+      break;
+
+    case 'd.ts':
+      file.dtsFileName = fileName;
+      file.dtsContent = content;
+      break;
+
+    case 'map':
+      file.jsMapContent = content;
+      break;
+  }
+};
+
+/* rename */
+function renameCallback(p) {
+  if (p.extname === '.mjs' || p.extname === '.cjs') {
+    p.extname = '.js';
+  }
+}
+
 const tsOptions = {
   ...tsconfig.compilerOptions,
-  module: 'commonjs',
-  skipLibCheck: true
+  moduleResolution: 'Node12',
+  module: 'Node12',
+  skipLibCheck: true,
+  typescript
 };
 
 const tsESMOptions = {
   ...tsconfig.compilerOptions,
-  skipLibCheck: true
+  skipLibCheck: true,
+  typescript
 };
 
 function serverBuild() {
-  const result = gulp.src(['src/**/!(client).ts', '!src/**/*.esm.ts'])
-    .pipe(typescript(tsOptions));
+  const result = gulp.src(['src/**/!(client).{ts,cts}'])
+    .pipe(gulpTypescript(tsOptions));
 
-  return result.js.pipe(gulp.dest('lib'));
+  return result.js
+    .pipe(rename(renameCallback))
+    .pipe(gulp.dest('lib'));
 }
 
 function serverESMBuild() {
-  const result = gulp.src(['src/**/!(client|cjs).ts', '!src/**/*.esm.ts'])
-    .pipe(typescript(tsESMOptions));
-
-  return result.js.pipe(gulp.dest('esm'));
-}
-
-function serverESMRewriteBuild() {
-  const result = gulp.src('src/**/*.esm.ts')
-    .pipe(typescript(tsESMOptions));
+  const result = gulp.src(['src/**/!(client).{ts,mts}'])
+    .pipe(gulpTypescript(tsESMOptions));
 
   return result.js
-    .pipe(rename(function(p) {
-      p.basename = p.basename.replace(/\.esm$/, '');
-    }))
+    .pipe(rename(renameCallback))
     .pipe(gulp.dest('esm'));
 }
 
 function createClientBuild(output) {
   return function clientBuild() {
     const result = gulp.src('src/client.ts')
-      .pipe(typescript({
+      .pipe(gulpTypescript({
         ...tsOptions,
         target: 'ES3'
       }));
@@ -97,7 +135,6 @@ export default gulp.series(
     serverESMBuild,
     createClientBuild('esm')
   ),
-  serverESMRewriteBuild,
   gulp.parallel(
     addJsExt,
     writeTypeModulePackageJsonFile

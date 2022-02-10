@@ -16,8 +16,11 @@ import { createProxyMiddleware, Options } from 'http-proxy-middleware';
 import mime from 'mime-types';
 import type { IFs } from 'memfs';
 import WebSocket from 'ws';
-import internalIp from 'internal-ip';
-import chalk from 'chalk';
+// @ts-ignore Node12
+import type { internalIpV4 as InternalIpV4 } from 'internal-ip';
+// @ts-ignore Node12
+import type Chalk from 'chalk';
+// @ts-ignore mjs and cjs
 import { WebSocketServer, dirname } from './utils';
 import type { ServerArgs, Https, KoaFunc } from './types';
 
@@ -344,7 +347,10 @@ ${ this.clientScript }\n
 
   // 输出本机IP信息
   async runningAtLog(): Promise<void> {
-    const ip: string = await internalIp.v4() || '127.0.0.1';
+    // eslint-disable-next-line @typescript-eslint/typedef
+    const [chalkModule, { internalIpV4 }]: [{ default: typeof Chalk }, { internalIpV4: typeof InternalIpV4 }]
+      = await Promise.all([import('chalk'), import('internal-ip')]);
+    const ip: string = await internalIpV4() || '127.0.0.1';
     const protocol: string = this.https ? 'https' : 'http';
     const logs: string[] = [
       ' Running at:',
@@ -352,7 +358,7 @@ ${ this.clientScript }\n
       ` - Network: ${ protocol }://${ ip }:${ this.port }`
     ];
 
-    console.log(`\n${ chalk.cyan(logs.join('\n')) }\n`);
+    console.log(`\n${ chalkModule.default.cyan(logs.join('\n')) }\n`);
   }
 
   // 初始化
