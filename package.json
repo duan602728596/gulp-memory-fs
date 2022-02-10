@@ -49,7 +49,7 @@
     "build": "rimraf lib && rimraf esm && NODE_OPTIONS=\"--experimental-json-modules\" gulp",
     "example": "gulp --gulpfile test/gulpfile.mjs",
     "test": "mocha ./test/test.js --timeout 180000",
-    "eslint": "eslint ./ --ext .js,.jsx,.ts,.tsx --fix"
+    "eslint": "eslint ./ --fix"
   },
   "packageManager": "yarn@3.1.1",
   "engines": {

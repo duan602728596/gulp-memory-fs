@@ -24,7 +24,7 @@ module.exports = {
   plugins: ['import'],
   settings: {
     'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx']
+      '@typescript-eslint/parser': ['.ts', '.tsx', '.mts', '.cts']
     },
     'import/resolver': {
       typescript: {
@@ -32,7 +32,7 @@ module.exports = {
         project: 'tsconfig.json'
       },
       node: {
-        extensions: ['.js', '.jsx', '.cjs', '.mjs', '.ts', '.tsx']
+        extensions: ['.js', '.jsx', '.cjs', '.mjs', '.ts', '.tsx', '.mts', '.cts']
       }
     }
   },
@@ -43,7 +43,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['*.ts', '*.tsx'],
+      files: ['*.ts', '*.tsx', '*.mts', '*.cts'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
         project: 'tsconfig.json',
@@ -92,11 +92,11 @@ module.exports = {
           { hoist: 'all' }
         ],
         'no-use-before-define': 'off',
-        '@typescript-eslint/no-use-before-define': 'error'  // 禁止定义前使用
+        '@typescript-eslint/no-use-before-define': 'error' // 禁止定义前使用
       }
     },
     {
-      files: ['*.js', '*.jsx'],
+      files: ['*.js', '*.jsx', '*.mjs', '*.cjs'],
       parser: '@babel/eslint-parser',
       parserOptions: {
         requireConfigFile: false
