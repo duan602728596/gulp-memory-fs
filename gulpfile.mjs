@@ -41,13 +41,8 @@ GulpTypescriptProjectCompiler.prototype.attachContentToFile = function(file, fil
   }
 };
 
-/* rename */
-function renameCallback(p) {
-  if (p.extname === '.mjs' || p.extname === '.cjs') {
-    p.extname = '.js';
-  }
-}
-
+/* typescript配置 */
+// cjs
 const tsOptions = {
   ...tsconfig.compilerOptions,
   moduleResolution: 'Node16',
@@ -56,14 +51,27 @@ const tsOptions = {
   typescript
 };
 
+// esm
 const tsESMOptions = {
   ...tsconfig.compilerOptions,
   skipLibCheck: true,
   typescript
 };
 
+/* 将mjs和cjs统一重命名为js */
+function renameCallback(p) {
+  if (p.extname === '.mjs' || p.extname === '.cjs') {
+    p.extname = '.js';
+  }
+}
+
+/* 编译server端的代码 */
+// cjs
 function serverBuild() {
-  const result = gulp.src(['src/**/!(client).{ts,cts}'])
+  const result = gulp.src([
+    'src/**/*.{ts,cts}',
+    '!src/client.ts'
+  ])
     .pipe(gulpTypescript(tsOptions));
 
   return result.js
@@ -71,8 +79,12 @@ function serverBuild() {
     .pipe(gulp.dest('lib'));
 }
 
+// esm
 function serverESMBuild() {
-  const result = gulp.src(['src/**/!(client).{ts,mts}'])
+  const result = gulp.src([
+    'src/**/*.{ts,mts}',
+    '!src/client.ts'
+  ])
     .pipe(gulpTypescript(tsESMOptions));
 
   return result.js
@@ -80,6 +92,7 @@ function serverESMBuild() {
     .pipe(gulp.dest('esm'));
 }
 
+/* 编译client自动刷新的注入代码 */
 function createClientBuild(output) {
   return function clientBuild() {
     const result = gulp.src('src/client.ts')
@@ -96,7 +109,10 @@ function createClientBuild(output) {
 
 /* 添加文件扩展名 */
 async function addJsExt() {
-  const files = await glob('esm/**/!(client).js');
+  const files = await glob([
+    'esm/**/*.js',
+    '!esm/client.js'
+  ]);
 
   for (const file of files) {
     const text = await fs.promises.readFile(file, { encoding: 'utf8' });
@@ -107,9 +123,7 @@ async function addJsExt() {
         (/^import /.test(value) || /^export {/.test(value))
         && (/from '\./.test(value) || /import '\./.test(value))
       ) {
-        const newValue = value.replace(/';$/, ".js';");
-
-        textArr[index] = newValue;
+        textArr[index] = value.replace(/';$/, ".js';");
       }
     });
 
@@ -119,10 +133,7 @@ async function addJsExt() {
 
 /* 写入package.js文件 */
 async function writeTypeModulePackageJsonFile() {
-  await fs.promises.writeFile(
-    'esm/package.json',
-    JSON.stringify({ type: 'module' }, null, 2) + '\n'
-  );
+  await fs.promises.writeFile('esm/package.json', JSON.stringify({ type: 'module' }) + '\n');
 }
 
 export default gulp.series(
