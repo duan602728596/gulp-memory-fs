@@ -37,7 +37,7 @@ class GulpMemoryFs {
     this.https = https;                          // https证书配置项
     this.dir = this.getDir(dir);                 // 转换文件路径
     this.reload = !!reload;                      // 修改后是否刷新页面
-    this.mkdirp = util.promisify(this.fs.mkdirp);
+    this.mkdirp = this.fs.promises.mkdir;
 
     // 服务
     this.server = new Server({
@@ -60,8 +60,8 @@ class GulpMemoryFs {
 
   /**
    * 格式化输出路径
-   * @param { string } output: 输出目录
-   * @param { string } relative: 目录
+   * @param { string } output - 输出目录
+   * @param { string } relative - 目录
    */
   formatOutPath(output: string, relative: string): OutPath {
     // 文件路径
@@ -79,7 +79,7 @@ class GulpMemoryFs {
 
   /**
    * 替换gulp.dest
-   * @param { string | undefined } output: 输出目录
+   * @param { string } [output] - 输出目录
    */
   dest(output?: string): Function {
     const _this: this = this;
@@ -110,7 +110,7 @@ class GulpMemoryFs {
 
   /**
    * 监视文件
-   * @param { string | undefined } output: 输出目录
+   * @param { string | undefined } output - 输出目录
    */
   changed(output?: string): Function {
     const _this: this = this;

@@ -16,10 +16,9 @@ import { createProxyMiddleware, type Options as ProxyMiddlewareOptions } from 'h
 import mime from 'mime-types';
 import type { IFs } from 'memfs';
 import WebSocket from 'ws';
-// @ts-ignore Node12
 import type { internalIpV4 as InternalIpV4 } from 'internal-ip';
-// @ts-ignore Node12
 import type Chalk from 'chalk';
+import log4js, { type Logger } from 'log4js';
 // @ts-ignore mjs and cjs
 import { WebSocketServer, dirname } from './utils';
 import type { ServerArgs, Https, KoaFunc } from './types';
@@ -44,6 +43,7 @@ class Server {
 
   public app: Koa;
   public router: Router;
+  public logger: Logger;
 
   public server: Http1Server | Http2SecureServer;
   public wsServer: WebSocketServer;
@@ -75,6 +75,9 @@ class Server {
 
     this.app = new Koa();
     this.router = new Router();
+
+    this.logger = log4js.getLogger();
+    this.logger.level = 'info';
   }
 
   // gulp-memory-fs注入的文件解析
@@ -107,9 +110,10 @@ ${ this.clientScript }\n
 
     for (const key in this.proxy) {
       this.app.use(connect(
-        createProxyMiddleware(key, {
+        createProxyMiddleware({
+          pathFilter: key,
           changeOrigin: true,
-          logLevel: 'info',
+          logger: this.logger,
           ...this.proxy[key]
         })
       ));
@@ -261,7 +265,7 @@ ${ this.clientScript }\n
 
   /**
    * 检查端口占用情况
-   * @param { number } port: 检查的端口
+   * @param { number } port - 检查的端口
    */
   portIsOccupied(port: number): Promise<boolean> {
     return new Promise(function(resolve: Function, reject: Function): void {
@@ -280,8 +284,8 @@ ${ this.clientScript }\n
 
   /**
    * 判断端口是否被占用，并返回新的端口
-   * @param { number } port: 检查的端口
-   * @param { Array<number> } ignorePort: 忽略的端口
+   * @param { number } port - 检查的端口
+   * @param { Array<number> } ignorePort - 忽略的端口
    */
   async detectPort(port: number, ignorePort: Array<number> = []): Promise<number> {
     let maxPort: number = port + 10; // 最大端口

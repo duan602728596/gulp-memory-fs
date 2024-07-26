@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "alwaysStrict": true,
-    "moduleResolution": "node",
-    "locale": "zh-CN",
+    "moduleResolution": "Node",
     "module": "ESNext",
     "target": "ES2018",
     "newLine": "LF",

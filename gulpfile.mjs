@@ -8,7 +8,7 @@ import gulpTypescriptUtils from 'gulp-typescript/release/utils.js';
 import terser from 'gulp-terser';
 import rename from 'gulp-rename';
 import typescript from 'typescript';
-import tsconfig from './tsconfig.json';
+import tsconfig from './tsconfig.json' assert { type: 'json' };
 
 const globPromise = util.promisify(glob);
 
@@ -53,8 +53,8 @@ function renameCallback(p) {
 
 const tsOptions = {
   ...tsconfig.compilerOptions,
-  moduleResolution: 'Node12',
-  module: 'Node12',
+  moduleResolution: 'Node16',
+  module: 'Node16',
   skipLibCheck: true,
   typescript
 };
@@ -88,7 +88,7 @@ function createClientBuild(output) {
     const result = gulp.src('src/client.ts')
       .pipe(gulpTypescript({
         ...tsOptions,
-        target: 'ES3'
+        target: 'ES5'
       }));
 
     return result.js
