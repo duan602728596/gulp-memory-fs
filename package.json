@@ -51,10 +51,7 @@
     "test": "mocha ./test/test.js --timeout 180000",
     "eslint": "eslint ./ --fix"
   },
-  "packageManager": "yarn@3.1.1",
-  "engines": {
-    "pm": "yarn@^3.1.1"
-  },
+  "packageManager": "yarn@4.3.1",
   "dependencies": {
     "@bbkkbkk/http-proxy": "^1.17.0",
     "@koa/router": "^10.1.1",
