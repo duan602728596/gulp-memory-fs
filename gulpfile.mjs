@@ -1,6 +1,5 @@
-import util from 'util';
 import fs from 'fs';
-import glob from 'glob';
+import { glob } from 'glob';
 import gulp from 'gulp';
 import gulpTypescript from 'gulp-typescript';
 import { ProjectCompiler as GulpTypescriptProjectCompiler } from 'gulp-typescript/release/compiler.js';
@@ -9,8 +8,6 @@ import terser from 'gulp-terser';
 import rename from 'gulp-rename';
 import typescript from 'typescript';
 import tsconfig from './tsconfig.json' assert { type: 'json' };
-
-const globPromise = util.promisify(glob);
 
 /**
  * fix: 重写 ProjectCompiler 的 attachContentToFile 方法
@@ -99,7 +96,7 @@ function createClientBuild(output) {
 
 /* 添加文件扩展名 */
 async function addJsExt() {
-  const files = await globPromise('esm/**/!(client).js');
+  const files = await glob('esm/**/!(client).js');
 
   for (const file of files) {
     const text = await fs.promises.readFile(file, { encoding: 'utf8' });
