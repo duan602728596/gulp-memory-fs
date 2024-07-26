@@ -1,5 +1,5 @@
-import { fileURLToPath } from 'url';
-import * as path from 'path';
+import { fileURLToPath } from 'node:url';
+import * as path from 'node:path';
 
 /**
  * ws模块导出Server的行为在cjs和esm下不一致

@@ -1,5 +1,5 @@
-import * as path from 'path';
-import type { Stats } from 'fs';
+import * as path from 'node:path';
+import type { Stats } from 'node:fs';
 import { createFsFromVolume, Volume, type IFs } from 'memfs';
 import through2 from 'through2';
 import PluginError from 'plugin-error';
