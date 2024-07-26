@@ -48,7 +48,7 @@
   "scripts": {
     "build": "rimraf lib && rimraf esm && gulp",
     "example": "gulp --gulpfile test/gulpfile.mjs",
-    "test": "mocha ./test/test.js --timeout 180000",
+    "test": "node ./test/test.mjs",
     "eslint": "eslint ./ --fix"
   },
   "packageManager": "yarn@4.3.1",
@@ -78,8 +78,6 @@
     "@types/node": "^20",
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "@typescript-eslint/parser": "^7.17.0",
-    "axios": "^0.25.0",
-    "chai": "^4.3.6",
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^9.7.0",
@@ -94,7 +92,6 @@
     "gulp-typescript": "^6.0.0-alpha.1",
     "husky": "^9.1.2",
     "lint-staged": "^15.2.7",
-    "mocha": "^9.2.0",
     "rimraf": "^6.0.1",
     "typescript": "^5.5.4"
   },

@@ -39,30 +39,30 @@ const gulpMemoryFs = new GulpMemoryFs({
 
 function js() {
   return gulp.src(path.join(__dirname, 'src/**/*.js'))
-    .pipe(gulpMemoryFs.changed('dist'))
-    .pipe(gulpMemoryFs.dest('dist'));
+    .pipe(gulpMemoryFs.changed())
+    .pipe(gulpMemoryFs.dest());
 }
 
 function html() {
   return gulp.src(path.join(__dirname, 'src/**/*.html'))
-    .pipe(gulpMemoryFs.dest('dist'));
+    .pipe(gulpMemoryFs.dest());
 }
 
 function css() {
   return gulp.src(path.join(__dirname, 'src/**/*.css'))
-    .pipe(gulpMemoryFs.dest('dist'));
+    .pipe(gulpMemoryFs.dest());
 }
 
 function img() {
-  return gulp.src(path.join(__dirname, 'src/img/**/*.*'))
-    .pipe(gulpMemoryFs.dest('dist/img'));
+  return gulp.src(path.join(__dirname, 'src/**/*.{avif,png,jpg,webp}'))
+    .pipe(gulpMemoryFs.dest());
 }
 
 function watch() {
   gulp.watch('src/**/*.js', js);
   gulp.watch('src/**/*.html', html);
   gulp.watch('src/**/*.css', css);
-  gulp.watch('src/img/**/*.*', img);
+  gulp.watch('src/**/*.{avif,png,jpg,webp}', img);
 }
 
 async function server() {

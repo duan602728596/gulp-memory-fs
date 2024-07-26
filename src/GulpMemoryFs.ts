@@ -1,11 +1,10 @@
-import * as util from 'util';
 import * as path from 'path';
 import type { Stats } from 'fs';
 import { createFsFromVolume, Volume, type IFs } from 'memfs';
 import through2 from 'through2';
 import PluginError from 'plugin-error';
 import Server from './Server';
-import type { GulpMemoryFsArgs, File, OutPath, Https, VolumeMkdirp } from './types';
+import type { GulpMemoryFsArgs, File, OutPath, Https } from './types';
 
 class GulpMemoryFs {
   static PLUGIN_NAME: string = 'gulp-memory-fs';
@@ -16,7 +15,7 @@ class GulpMemoryFs {
   public https?: Https;
   public dir: string;
   public reload: boolean;
-  public mkdirp: VolumeMkdirp;
+  public mkdirp: typeof this.fs.promises.mkdir;
   public server: Server;
 
   constructor(args: GulpMemoryFsArgs) {
@@ -97,7 +96,7 @@ class GulpMemoryFs {
       const formatOutput: OutPath = _this.formatOutPath(outputDir, file.relative);
 
       // 写入文件
-      await _this.mkdirp(formatOutput.dir);
+      await _this.mkdirp(formatOutput.dir, { recursive: true });
       await _this.fs.promises.writeFile(formatOutput.file, contents);
       _this.mTime.set(formatOutput.file, new Date().getTime());
 
@@ -110,7 +109,7 @@ class GulpMemoryFs {
 
   /**
    * 监视文件
-   * @param { string | undefined } output - 输出目录
+   * @param { string } [output] - 输出目录
    */
   changed(output?: string): Function {
     const _this: this = this;

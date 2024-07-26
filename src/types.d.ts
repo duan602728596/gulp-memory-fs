@@ -43,6 +43,3 @@ export interface OutPath {
 export interface ServerArgs extends GulpMemoryFsArgs {
   fs: IFs;
 }
-
-/* mkdirp */
-export type VolumeMkdirp = (path: PathLike, mode?: TMode) => any;
