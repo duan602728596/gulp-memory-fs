@@ -1,3 +1,7 @@
+### v4.0.0
+
+* Upgrade all dependencies to the latest version.
+
 ### v3.0.0
 
 * Replace `socket.io` with `ws`.
