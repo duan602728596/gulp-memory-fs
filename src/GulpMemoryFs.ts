@@ -10,7 +10,7 @@ class GulpMemoryFs {
   static PLUGIN_NAME: string = 'gulp-memory-fs';
 
   public PLUGIN_NAME: string;
-  public mTime: Map<string, number>;
+  public fileCacheTime: Map<string, number>;
   public fs: IFs;
   public https?: Https;
   public dir: string;
@@ -30,12 +30,12 @@ class GulpMemoryFs {
       mimeTypes
     }: GulpMemoryFsArgs = args;
 
-    this.PLUGIN_NAME = GulpMemoryFs.PLUGIN_NAME; // 插件名
-    this.mTime = new Map<string, number>();      // 记录缓存时间
-    this.fs = createFsFromVolume(new Volume());  // 内存文件系统
-    this.https = https;                          // https证书配置项
-    this.dir = this.getDir(dir);                 // 转换文件路径
-    this.reload = !!reload;                      // 修改后是否刷新页面
+    this.PLUGIN_NAME = GulpMemoryFs.PLUGIN_NAME;    // 插件名
+    this.fileCacheTime = new Map<string, number>(); // 记录缓存时间
+    this.fs = createFsFromVolume(new Volume());     // 内存文件系统
+    this.https = https;                             // https证书配置项
+    this.dir = this.getDir(dir);                    // 转换文件路径
+    this.reload = !!reload;                         // 修改后是否刷新页面
     this.mkdirp = this.fs.promises.mkdir;
 
     // 服务
@@ -81,7 +81,7 @@ class GulpMemoryFs {
    * @param { string } [output] - 输出目录
    */
   dest(output?: string): Function {
-    const _this: this = this;
+    const self: this = this;
     const outputDir: string = output ? this.getDir(output) : this.dir;
 
     return through2.obj(async function(file: File, enc: string, callback: Function): Promise<any> {
@@ -93,15 +93,15 @@ class GulpMemoryFs {
       }
 
       const contents: Buffer = file.contents;
-      const formatOutput: OutPath = _this.formatOutPath(outputDir, file.relative);
+      const formatOutput: OutPath = self.formatOutPath(outputDir, file.relative);
 
       // 写入文件
-      await _this.mkdirp(formatOutput.dir, { recursive: true });
-      await _this.fs.promises.writeFile(formatOutput.file, contents);
-      _this.mTime.set(formatOutput.file, new Date().getTime());
+      await self.mkdirp(formatOutput.dir, { recursive: true });
+      await self.fs.promises.writeFile(formatOutput.file, contents);
+      self.fileCacheTime.set(formatOutput.file, new Date().getTime());
 
       // reload
-      _this.reload && _this.server.reloadFunc();
+      self.reload && self.server.reloadFunc();
 
       return callback();
     });
@@ -112,7 +112,7 @@ class GulpMemoryFs {
    * @param { string } [output] - 输出目录
    */
   changed(output?: string): Function {
-    const _this: this = this;
+    const self: this = this;
     const outputDir: string = output ? this.getDir(output) : this.dir;
 
     return through2.obj(function(file: File, enc: string, callback: Function): any {
@@ -121,8 +121,8 @@ class GulpMemoryFs {
       const mtime: number = stats.mtime.getTime();
 
       // 编译文件的修改时间
-      const formatOutput: OutPath = _this.formatOutPath(outputDir, file.relative);
-      const time: number | undefined = _this.mTime.get(formatOutput.file);
+      const formatOutput: OutPath = self.formatOutPath(outputDir, file.relative);
+      const time: number | undefined = self.fileCacheTime.get(formatOutput.file);
 
       // 文件的最新修改时间大于缓存时间
       if (!time || mtime > time) {

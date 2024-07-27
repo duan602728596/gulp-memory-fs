@@ -37,9 +37,9 @@ class Server {
   public https?: Https;
   public reload: boolean;
   public reloadTime: number;
-  public mock?: { [key: string]: any | KoaFunc };
-  public proxy?: { [key: string]: ProxyMiddlewareOptions };
-  public mimeTypes?: { [key: string]: string };
+  public mock?: Record<string, any | KoaFunc>;
+  public proxy?: Record<string, ProxyMiddlewareOptions>;
+  public mimeTypes?: Record<string, string>;
 
   public app: Koa;
   public router: Router;
@@ -122,8 +122,6 @@ ${ this.clientScript }\n
 
   // 重写mime types的中间件
   createRewriteMime(): Middleware {
-    const _this: this = this;
-
     return async function(ctx: Context, next: Function): Promise<void> {
       await next();
 
@@ -160,7 +158,6 @@ ${ this.clientScript }\n
       if (formatData.length === 1) {
         uri = formatData[0];
       } else {
-        // eslint-disable-next-line @typescript-eslint/typedef
         [method, uri] = [formatData[0].toLocaleLowerCase(), formatData[1]];
       }
 
@@ -178,22 +175,22 @@ ${ this.clientScript }\n
 
   // 创建路由
   createRouters(): void {
-    const _this: this = this;
+    const self: this = this;
 
     this.router.get(/^\/.*/, function(ctx: Context, next: Function): void {
       try {
         const ctxPath: string = ctx.path === '/' ? '/index.html' : ctx.path; // 路径
-        const filePath: string = path.join(_this.dir, ctxPath)               // 文件
+        const filePath: string = path.join(self.dir, ctxPath)               // 文件
           .replace(/\\/g, '/');
         const mimeType: string | boolean = mime.lookup(ctxPath);
 
         // gulp-memory-fs注入的文件解析
-        const fp: boolean = _this.fileParsing(ctxPath, ctx);
+        const fp: boolean = self.fileParsing(ctxPath, ctx);
 
         if (fp) return;
 
         // 判断文件是否存在
-        if (!_this.fs.existsSync(filePath)) {
+        if (!self.fs.existsSync(filePath)) {
           ctx.status = 404;
 
           return;
@@ -204,11 +201,11 @@ ${ this.clientScript }\n
           ctx.type = mimeType;
         }
 
-        let content: Buffer | string = _this.fs.readFileSync(filePath);
+        let content: Buffer | string = self.fs.readFileSync(filePath);
 
         // 注入脚本
-        if (_this.reload && mimeType === 'text/html') {
-          content = _this.injectionScripts(content.toString());
+        if (self.reload && mimeType === 'text/html') {
+          content = self.injectionScripts(content.toString());
         }
 
         ctx.status = 200;
@@ -351,7 +348,6 @@ ${ this.clientScript }\n
 
   // 输出本机IP信息
   async runningAtLog(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/typedef
     const [chalkModule, { internalIpV4 }]: [{ default: typeof Chalk }, { internalIpV4: typeof InternalIpV4 }]
       = await Promise.all([import('chalk'), import('internal-ip')]);
     const ip: string = await internalIpV4() || '127.0.0.1';

@@ -19,9 +19,9 @@ export interface GulpMemoryFsArgs {
   https?: Https;
   reload?: boolean;
   reloadTime?: number;
-  mock?: { [key: string]: any | KoaFunc };
-  proxy?: { [key: string]: Options };
-  mimeTypes?: { [key: string]: string };
+  mock?: Record<string, any | KoaFunc>;
+  proxy?: Record<string, Options>;
+  mimeTypes?: Record<string, string>;
 }
 
 /* 文件的参数 */
