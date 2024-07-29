@@ -23,8 +23,6 @@ import log4js, { type Logger } from 'log4js';
 import { WebSocketServer, dirname } from './utils';
 import type { ServerArgs, Https, KoaFunc } from './types';
 
-const noop: Function = (): void => { /* noop */ };
-
 class Server {
   // 默认的mime类型
   static defaultMimeMaps: { [key: string]: string } = {
@@ -47,6 +45,7 @@ class Server {
 
   public server: Http1Server | Http2SecureServer;
   public wsServer: WebSocketServer;
+  public pingTimer: NodeJS.Timeout;
 
   public clientScript: string;
 
@@ -329,14 +328,26 @@ ${ this.clientScript }\n
       });
     });
 
-    setInterval((): void => {
-      this.wsServer.clients.forEach((socket: WebSocket): void => {
-        if (socket.isAlive === false) {
-          return socket.terminate();
+    this.wsServer.on('connection', (ws: WebSocket): void => {
+      ws.isAlive = true;
+      ws.on('error', console.error);
+      ws.on('pong', (): void => {
+        ws.isAlive = true;
+      });
+    });
+
+    this.wsServer.on('close', (): void => {
+      clearTimeout(this.pingTimer);
+    });
+
+    this.pingTimer = setInterval((): void => {
+      this.wsServer.clients.forEach((ws: WebSocket): void => {
+        if (!ws.isAlive) {
+          return ws.terminate();
         }
 
-        socket.isAlive = false;
-        socket.ping(noop);
+        ws.isAlive = false;
+        ws.ping();
       });
     }, 30_000);
   }
