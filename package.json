@@ -1,6 +1,6 @@
 {
   "name": "gulp-memory-fs",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Memory file system can also be used in gulp environment. - gulp环境下也可以使用内存文件系统。",
   "author": {
     "name": "段昊辰",

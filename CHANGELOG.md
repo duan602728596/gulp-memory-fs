@@ -1,3 +1,8 @@
+### v4.1.0
+
+* Fixed some issues with websocket server refresh and scheduled ping.
+* Fix the error of loading esm under cjs.
+
 ### v4.0.0
 
 * Upgrade all dependencies to the latest version.
