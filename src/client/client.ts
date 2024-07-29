@@ -34,5 +34,8 @@ function client({ reloadTime }: ClientArgs): void {
   const socket: WebSocket = new WebSocket(
     `${ location.protocol === 'https:' ? 'wss' : 'ws' }://${ location.host }/@@/gulp-memory-fs/ws`);
 
-  socket.addEventListener('message', createSocketReloadFunc(reloadTime), false);
+  socket.addEventListener('message', createSocketReloadFunc(reloadTime));
+  socket.addEventListener('close', function(event: CloseEvent): void {
+    socket.close();
+  });
 }
