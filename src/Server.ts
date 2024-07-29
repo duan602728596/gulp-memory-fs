@@ -20,7 +20,7 @@ import type { internalIpV4 as InternalIpV4 } from 'internal-ip';
 import type Chalk from 'chalk';
 import log4js, { type Logger } from 'log4js';
 // @ts-ignore mjs and cjs
-import { WebSocketServer, dirname } from './utils';
+import { WebSocketServer, dirname, importESM } from './utils';
 import type { ServerArgs, Https, KoaFunc } from './types';
 
 class Server {
@@ -360,7 +360,7 @@ ${ this.clientScript }\n
   // 输出本机IP信息
   async runningAtLog(): Promise<void> {
     const [chalkModule, { internalIpV4 }]: [{ default: typeof Chalk }, { internalIpV4: typeof InternalIpV4 }]
-      = await Promise.all([import('chalk'), import('internal-ip')]);
+      = await Promise.all([importESM('chalk'), importESM('internal-ip')]);
     const ip: string = await internalIpV4() || '127.0.0.1';
     const protocol: string = this.https ? 'https' : 'http';
     const logs: string[] = [

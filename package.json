@@ -48,6 +48,7 @@
   "scripts": {
     "build": "rimraf lib && rimraf esm && gulp",
     "example": "gulp --gulpfile test/gulpfile.mjs",
+    "example:cjs": "gulp --gulpfile test/gulpfile.cjs",
     "test": "node ./test/test.mjs",
     "eslint": "eslint ./ --fix"
   },
@@ -55,6 +56,7 @@
   "dependencies": {
     "@bbkkbkk/http-proxy": "^1.17.0",
     "@koa/router": "^12.0.1",
+    "@sweet-milktea/utils": "^4.0.0",
     "chalk": "^5.3.0",
     "http-proxy-middleware": "^3.0.0",
     "internal-ip": "^8.0.0",
@@ -73,7 +75,6 @@
     "@babel/eslint-parser": "^7.24.8",
     "@eslint/compat": "^1.1.1",
     "@sweet-milktea/babel-preset-sweet": "^4.2.1",
-    "@sweet-milktea/utils": "^4.0.0",
     "@types/koa": "^2",
     "@types/node": "^20",
     "@types/through2": "^2",

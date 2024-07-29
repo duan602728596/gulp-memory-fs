@@ -1,9 +1,6 @@
-import path from 'node:path';
-import gulp from 'gulp';
-import { metaHelper } from '@sweet-milktea/utils';
-import GulpMemoryFs from '../esm/GulpMemoryFs.js';
-
-const { __dirname } = metaHelper(import.meta.url);
+const path = require('node:path');
+const gulp = require('gulp');
+const GulpMemoryFs = require('../lib/GulpMemoryFs.js').default;
 
 const mock = {
   'GET /mock/0': [0, 1, 2, 3],
@@ -69,7 +66,7 @@ async function server() {
   await gulpMemoryFs.createServer();
 }
 
-export default gulp.series(
+exports.default = gulp.series(
   gulp.parallel(js, html, css, img),
   gulp.parallel(watch, server)
 );

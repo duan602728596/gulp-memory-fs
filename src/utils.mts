@@ -10,3 +10,7 @@ export { WebSocketServer } from 'ws';
 const __filename: string = fileURLToPath(import.meta.url);
 
 export const dirname: string = path.dirname(__filename);
+
+export function importESM(id: string): any {
+  return import(id);
+}
