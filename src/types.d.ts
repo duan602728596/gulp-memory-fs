@@ -1,6 +1,6 @@
 import type { Stats } from 'fs';
 import type { IFs } from 'memfs';
-import type { Context } from 'koa';
+import type { Context, Next } from 'koa';
 import type { Options } from 'http-proxy-middleware';
 
 /* https证书配置项 */
@@ -10,7 +10,7 @@ export interface Https {
 }
 
 /* koa function */
-export type KoaFunc = (ctx: Context, next: Function) => void | Promise<void>;
+export type KoaFunc = (ctx: Context, next: Next) => void | Promise<void>;
 
 /* 传递参数 */
 export interface GulpMemoryFsArgs {

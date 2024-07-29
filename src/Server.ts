@@ -9,7 +9,7 @@ import * as fs from 'node:fs';
 import * as net from 'node:net';
 import type { Server as NetServer, Socket } from 'node:net';
 import Koa from 'koa';
-import type { Context, Middleware } from 'koa';
+import type { Context, Middleware, Next } from 'koa';
 import Router from '@koa/router';
 import connect from 'koa-connect';
 import { createProxyMiddleware, type Options as ProxyMiddlewareOptions } from 'http-proxy-middleware';
@@ -44,10 +44,10 @@ class Server {
   public logger: Logger;
 
   public server: Http1Server | Http2SecureServer;
-  public wsServer: WebSocketServer;
-  public pingTimer: NodeJS.Timeout;
+  public wsServer?: WebSocketServer;
+  public pingTimer?: NodeJS.Timeout;
 
-  public clientScript: string;
+  public clientScript?: string;
 
   constructor(args: ServerArgs) {
     const {
@@ -121,7 +121,7 @@ ${ this.clientScript }\n
 
   // 重写mime types的中间件
   createRewriteMime(): Middleware {
-    return async function(ctx: Context, next: Function): Promise<void> {
+    return async function(ctx: Context, next: Next): Promise<void> {
       await next();
 
       if (!(ctx.type && ctx.type !== '')) {
@@ -166,7 +166,7 @@ ${ this.clientScript }\n
       const value: KoaFunc | any = this.mock[key];
       const routerFunc: KoaFunc = typeof value === 'function'
         ? value
-        : (ctx: Context, next: Function): void => ctx.body = value;
+        : (ctx: Context, next: Next): void => ctx.body = value;
 
       this.router[method](uri, routerFunc);
     }
@@ -176,7 +176,7 @@ ${ this.clientScript }\n
   createRouters(): void {
     const self: this = this;
 
-    this.router.get(/^\/.*/, function(ctx: Context, next: Function): void {
+    this.router.get(/^\/.*/, function(ctx: Context, next: Next): void {
       try {
         const ctxPath: string = ctx.path === '/' ? '/index.html' : ctx.path; // 路径
         const filePath: string = path.join(self.dir, ctxPath)               // 文件
@@ -213,13 +213,13 @@ ${ this.clientScript }\n
         ctx.status = 500;
         ctx.body = `<pre style="font-size: 14px; white-space: pre-wrap;">${ err.stack.toString() }</pre>`;
 
-        console.error(err);
+        self.logger.error(err);
       }
     });
   }
 
-  // 创建服务
-  async createServer(): Promise<void> {
+  // 启动服务
+  async serverInit(): Promise<void> {
     if (this.https) {
       const [keyFile, certFile]: [Buffer, Buffer] = await Promise.all([
         fs.promises.readFile(this.https.key),
@@ -311,28 +311,30 @@ ${ this.clientScript }\n
     this.port = await this.detectPort(this.port);
   }
 
-  // socket
-  createSocket(): void {
+  // 创建websocket服务
+  websocketServerInit(): void {
     this.wsServer = new WebSocketServer({
       noServer: true,
       path: '/@@/gulp-memory-fs/ws'
     });
 
-    this.server.on('upgrade', (req: IncomingMessage, sock: Socket, head: Buffer): void => {
+    this.server.on('upgrade', (req: IncomingMessage, socket: Socket, head: Buffer): void => {
       if (!this.wsServer.shouldHandle(req)) {
         return;
       }
 
-      this.wsServer.handleUpgrade(req, sock, head, (connection: WebSocket): void => {
+      this.wsServer.handleUpgrade(req, socket, head, (connection: WebSocket): void => {
         this.wsServer.emit('connection', connection, req);
       });
     });
 
     this.wsServer.on('connection', (ws: WebSocket): void => {
-      ws.isAlive = true;
-      ws.on('error', console.error);
+      ws['isAlive'] = true;
+      ws.on('error', (err: Error): void => {
+        this.logger.error(err);
+      });
       ws.on('pong', (): void => {
-        ws.isAlive = true;
+        ws['isAlive'] = true;
       });
     });
 
@@ -342,18 +344,18 @@ ${ this.clientScript }\n
 
     this.pingTimer = setInterval((): void => {
       this.wsServer.clients.forEach((ws: WebSocket): void => {
-        if (!ws.isAlive) {
+        if (!ws['isAlive']) {
           return ws.terminate();
         }
 
-        ws.isAlive = false;
+        ws['isAlive'] = false;
         ws.ping();
       });
     }, 30_000);
   }
 
-  // file
-  async getFile(): Promise<void> {
+  // 获取注入的脚本文件
+  async getInjectScriptFile(): Promise<void> {
     this.clientScript = await fs.promises.readFile(path.join(dirname, 'client/client.js'), { encoding: 'utf8' });
   }
 
@@ -379,12 +381,12 @@ ${ this.clientScript }\n
     this.createMockRouters();
     this.createRouters();
     await this.getPort();
-    await this.createServer();
+    await this.serverInit();
 
     // 是否刷新
     if (this.reload) {
-      await this.getFile();
-      this.createSocket();
+      await this.getInjectScriptFile();
+      this.websocketServerInit();
     }
 
     await this.runningAtLog();
