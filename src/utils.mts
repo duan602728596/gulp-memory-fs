@@ -4,13 +4,17 @@ import * as path from 'node:path';
 /**
  * ws模块导出Server的行为在cjs和esm下不一致
  */
-
 export { WebSocketServer } from 'ws';
 
-const __filename: string = fileURLToPath(import.meta.url);
+/**
+ * 文件位置
+ */
+export const dirname: string = path.dirname(fileURLToPath(import.meta.url));
 
-export const dirname: string = path.dirname(__filename);
-
+/**
+ * ESM模块加载
+ * @param { string } id
+ */
 export function importESM(id: string): any {
   return import(id);
 }
