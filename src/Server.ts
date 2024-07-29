@@ -25,7 +25,7 @@ import type { ServerArgs, Https, KoaFunc } from './types';
 
 class Server {
   // 默认的mime类型
-  static defaultMimeMaps: { [key: string]: string } = {
+  static defaultMimeMaps: Record<string, string> = {
     avifs: 'image/avif-sequence'
   };
 
@@ -174,22 +174,20 @@ ${ this.clientScript }\n
 
   // 创建路由
   createRouters(): void {
-    const self: this = this;
-
-    this.router.get(/^\/.*/, function(ctx: Context, next: Next): void {
+    this.router.get(/^\/.*/, (ctx: Context, next: Next): void => {
       try {
         const ctxPath: string = ctx.path === '/' ? '/index.html' : ctx.path; // 路径
-        const filePath: string = path.join(self.dir, ctxPath)               // 文件
+        const filePath: string = path.join(this.dir, ctxPath)               // 文件
           .replace(/\\/g, '/');
         const mimeType: string | boolean = mime.lookup(ctxPath);
 
         // gulp-memory-fs注入的文件解析
-        const fp: boolean = self.fileParsing(ctxPath, ctx);
+        const fp: boolean = this.fileParsing(ctxPath, ctx);
 
         if (fp) return;
 
         // 判断文件是否存在
-        if (!self.fs.existsSync(filePath)) {
+        if (!this.fs.existsSync(filePath)) {
           ctx.status = 404;
 
           return;
@@ -200,11 +198,11 @@ ${ this.clientScript }\n
           ctx.type = mimeType;
         }
 
-        let content: Buffer | string = self.fs.readFileSync(filePath);
+        let content: Buffer | string = this.fs.readFileSync(filePath);
 
         // 注入脚本
-        if (self.reload && mimeType === 'text/html') {
-          content = self.injectionScripts(content.toString());
+        if (this.reload && mimeType === 'text/html') {
+          content = this.injectionScripts(content.toString());
         }
 
         ctx.status = 200;
@@ -213,7 +211,7 @@ ${ this.clientScript }\n
         ctx.status = 500;
         ctx.body = `<pre style="font-size: 14px; white-space: pre-wrap;">${ err.stack.toString() }</pre>`;
 
-        self.logger.error(err);
+        this.logger.error(err);
       }
     });
   }

@@ -1,7 +1,8 @@
 import * as path from 'node:path';
 import type { Stats } from 'node:fs';
+import type { Transform } from 'node:stream';
 import { createFsFromVolume, Volume, type IFs } from 'memfs';
-import through2 from 'through2';
+import through2, { type TransformCallback } from 'through2';
 import PluginError from 'plugin-error';
 import Server from './Server';
 import type { GulpMemoryFsArgs, File, OutPath, Https } from './types';
@@ -80,11 +81,11 @@ class GulpMemoryFs {
    * 替换gulp.dest
    * @param { string } [output] - 输出目录
    */
-  dest(output?: string): Function {
+  dest(output?: string): Transform {
     const self: this = this;
     const outputDir: string = output ? this.getDir(output) : this.dir;
 
-    return through2.obj(async function(file: File, enc: string, callback: Function): Promise<any> {
+    return through2.obj(async function(file: File, enc: BufferEncoding, callback: TransformCallback): Promise<void> {
       // 错误判断
       if (file.isStream()) {
         this.emit('error', new PluginError(GulpMemoryFs.PLUGIN_NAME, 'Streams are not supported!'));
@@ -111,11 +112,11 @@ class GulpMemoryFs {
    * 监视文件
    * @param { string } [output] - 输出目录
    */
-  changed(output?: string): Function {
+  changed(output?: string): Transform {
     const self: this = this;
     const outputDir: string = output ? this.getDir(output) : this.dir;
 
-    return through2.obj(function(file: File, enc: string, callback: Function): any {
+    return through2.obj(function(file: File, enc: BufferEncoding, callback: TransformCallback): void {
       // 当前文件的修改时间
       const stats: Stats = file.stat;
       const mtime: number = stats.mtime.getTime();

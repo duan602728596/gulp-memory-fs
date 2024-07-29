@@ -30,6 +30,7 @@ function globalsSettings(keys) {
 const languageGlobalsOptions = {
   NodeJS: 'readonly',
   NodeRequire: 'readonly',
+  BufferEncoding: 'readonly',
   ...globalsSettings(['browser', 'chai', 'commonjs', 'es5', 'mocha', 'node', 'nodeBuiltin', 'worker'])
 };
 
