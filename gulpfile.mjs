@@ -70,7 +70,7 @@ function renameCallback(p) {
 function serverBuild() {
   const result = gulp.src([
     'src/**/*.{ts,cts}',
-    '!src/client.ts'
+    '!src/client/**.ts'
   ])
     .pipe(gulpTypescript(tsOptions));
 
@@ -83,7 +83,7 @@ function serverBuild() {
 function serverESMBuild() {
   const result = gulp.src([
     'src/**/*.{ts,mts}',
-    '!src/client.ts'
+    '!src/client/**.ts'
   ])
     .pipe(gulpTypescript(tsESMOptions));
 
@@ -95,7 +95,7 @@ function serverESMBuild() {
 /* 编译client自动刷新的注入代码 */
 function createClientBuild(output) {
   return function clientBuild() {
-    const result = gulp.src('src/client.ts')
+    const result = gulp.src('src/client/**.ts')
       .pipe(gulpTypescript({
         ...tsOptions,
         target: 'ES5'
@@ -111,7 +111,7 @@ function createClientBuild(output) {
 async function addJsExt() {
   const files = await glob([
     'esm/**/*.js',
-    '!esm/client.js'
+    '!esm/client/**.js'
   ]);
 
   for (const file of files) {
@@ -139,9 +139,9 @@ async function writeTypeModulePackageJsonFile() {
 export default gulp.series(
   gulp.parallel(
     serverBuild,
-    createClientBuild('lib'),
+    createClientBuild('lib/client'),
     serverESMBuild,
-    createClientBuild('esm')
+    createClientBuild('esm/client')
   ),
   gulp.parallel(
     addJsExt,

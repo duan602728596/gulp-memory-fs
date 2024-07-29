@@ -343,7 +343,7 @@ ${ this.clientScript }\n
 
   // file
   async getFile(): Promise<void> {
-    this.clientScript = await fs.promises.readFile(path.join(dirname, 'client.js'), { encoding: 'utf8' });
+    this.clientScript = await fs.promises.readFile(path.join(dirname, 'client/client.js'), { encoding: 'utf8' });
   }
 
   // 输出本机IP信息
