@@ -89,7 +89,7 @@
     "eslint-plugin-import": "^2.29.1",
     "glob": "^11.0.0",
     "globals": "^15.8.0",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-terser": "^2.1.0",
     "gulp-typescript": "^6.0.0-alpha.1",
