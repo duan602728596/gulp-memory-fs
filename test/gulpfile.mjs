@@ -54,7 +54,7 @@ function css() {
 }
 
 function img() {
-  return gulp.src(path.join(__dirname, 'src/**/*.{avif,png,jpg,webp}'))
+  return gulp.src(path.join(__dirname, 'src/**/*.{avif,png,jpg,webp}'), { encoding: false })
     .pipe(gulpMemoryFs.dest());
 }
 
