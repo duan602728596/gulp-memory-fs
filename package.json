@@ -73,7 +73,6 @@
   "devDependencies": {
     "@babel/core": "^7.24.9",
     "@babel/eslint-parser": "^7.24.8",
-    "@eslint/compat": "^1.1.1",
     "@sweet-milktea/babel-preset-sweet": "^4.2.1",
     "@types/koa": "^2",
     "@types/node": "^20",

@@ -1,4 +1,3 @@
-import { fixupPluginRules } from '@eslint/compat';
 import babelEslintParser from '@babel/eslint-parser';
 import typescriptEslintParser from '@typescript-eslint/parser';
 import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
@@ -35,7 +34,7 @@ const languageGlobalsOptions = {
 };
 
 const plugins = {
-  import: fixupPluginRules(eslintPluginImport)
+  import: eslintPluginImport
 };
 
 const settings = {
